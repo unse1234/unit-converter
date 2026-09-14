@@ -1,0 +1,321 @@
+@import 'tailwindcss';
+
+/*
+ * Design system — derived from unit-converter-spec/DESIGN.md (Vercel/Geist language).
+ *
+ * Two documented deviations from DESIGN.md, both required by CLAUDE.md:
+ *
+ * 1. Dark theme. DESIGN.md documents only the light palette. CLAUDE.md requires
+ *    light/dark/system, so the dark scale below is derived from the same
+ *    achromatic philosophy (4 background stops, 3 text stops, one accent).
+ *
+ * 2. Content type scale. DESIGN.md's observed `p: 12px` / `h2: 14px` are Vercel
+ *    marketing-page computed styles. This product publishes long-form conversion
+ *    content, where 12px body text is a readability and WCAG problem. The token
+ *    system, the weight rule (400/500/600 only, never 700) and the negative
+ *    display tracking are kept; the content scale starts at 16px.
+ *
+ * Contrast note: DESIGN.md's #8F8F8F is a decorative/disabled value (2.6:1 on
+ * #FAFAFA) and is never used for meaningful text here. Body-size links use
+ * #0062D1 (5.1:1) rather than #0072F5 (4.1:1); #0072F5 remains the focus ring.
+ */
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  color-scheme: light;
+
+  /* Achromatic surface scale (light) */
+  --ds-bg-100: #ffffff; /* elevated: cards, menus, modals */
+  --ds-bg-200: #fafafa; /* page canvas */
+  --ds-bg-300: #f2f2f2; /* recessed: inputs, toggle tracks */
+  --ds-bg-400: #ebebeb; /* hover fill */
+  --ds-bg-500: #e5e5e5; /* active fill */
+
+  /* Text scale */
+  --ds-fg-100: #171717; /* primary */
+  --ds-fg-200: #4d4d4d; /* secondary */
+  --ds-fg-300: #666666; /* subtle, still AA at body size */
+  --ds-fg-400: #8f8f8f; /* decorative / placeholder / disabled only */
+
+  /* Accent */
+  --ds-accent: #0062d1; /* link + accent text (AA at body size) */
+  --ds-accent-strong: #0072f5; /* focus ring, large accent surfaces */
+  --ds-accent-fg: #ffffff;
+  --ds-accent-subtle: #f0f6ff;
+
+  /* Feedback — used at indicator scale, never as large fills */
+  --ds-success: #398e4a;
+  --ds-warning: #9a5b00;
+  --ds-danger: #c7262b;
+  --ds-danger-subtle: #fff0f0;
+
+  /* Border simulation (shadow-as-border) */
+  --ds-border: #00000014;
+  --ds-border-strong: #00000029;
+
+  --ds-focus-color: var(--ds-accent-strong);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --ds-bg-100: #111111;
+  --ds-bg-200: #0a0a0a;
+  --ds-bg-300: #1a1a1a;
+  --ds-bg-400: #242424;
+  --ds-bg-500: #2e2e2e;
+
+  --ds-fg-100: #ededed;
+  --ds-fg-200: #a1a1a1;
+  --ds-fg-300: #8f8f8f;
+  --ds-fg-400: #6b6b6b;
+
+  --ds-accent: #52aeff;
+  --ds-accent-strong: #3291ff;
+  --ds-accent-fg: #0a0a0a;
+  --ds-accent-subtle: #0e1c2e;
+
+  --ds-success: #6cda75;
+  --ds-warning: #ff990a;
+  --ds-danger: #ff6369;
+  --ds-danger-subtle: #2a1214;
+
+  --ds-border: #ffffff1f;
+  --ds-border-strong: #ffffff33;
+}
+
+@theme inline {
+  /* Colors */
+  --color-surface: var(--ds-bg-100);
+  --color-canvas: var(--ds-bg-200);
+  --color-recessed: var(--ds-bg-300);
+  --color-hover: var(--ds-bg-400);
+  --color-active: var(--ds-bg-500);
+
+  --color-fg: var(--ds-fg-100);
+  --color-fg-secondary: var(--ds-fg-200);
+  --color-fg-subtle: var(--ds-fg-300);
+  --color-fg-muted: var(--ds-fg-400);
+
+  --color-accent: var(--ds-accent);
+  --color-accent-strong: var(--ds-accent-strong);
+  --color-accent-fg: var(--ds-accent-fg);
+  --color-accent-subtle: var(--ds-accent-subtle);
+
+  --color-success: var(--ds-success);
+  --color-warning: var(--ds-warning);
+  --color-danger: var(--ds-danger);
+  --color-danger-subtle: var(--ds-danger-subtle);
+
+  --color-line: var(--ds-border);
+  --color-line-strong: var(--ds-border-strong);
+
+  /* Typography — Geist, loaded via next/font in the root layout */
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, 'Roboto Mono', monospace;
+
+  /*
+   * Radius (DESIGN.md §4). The standard scale is remapped so the idiomatic
+   * utilities carry this system's values: rounded-md is the 6px functional
+   * default for buttons and inputs, rounded-xl the 12px card radius.
+   */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+
+  /* Elevation — composed shadow layers (DESIGN.md §6) */
+  --shadow-border: 0 0 0 1px var(--ds-border);
+  --shadow-border-strong: 0 0 0 1px var(--ds-border-strong);
+  --shadow-small: 0 0 0 1px var(--ds-border), 0 2px 2px #0000000a;
+  --shadow-medium: 0 0 0 1px var(--ds-border), 0 2px 2px #0000000a, 0 8px 8px -8px #0000000a;
+  --shadow-large: 0 0 0 1px var(--ds-border), 0 2px 2px #0000000a, 0 8px 16px -4px #0000000a;
+  --shadow-menu:
+    0 0 0 1px var(--ds-border), 0 1px 1px #00000005, 0 4px 8px -4px #0000000a,
+    0 16px 24px -8px #0000000f;
+  --shadow-modal:
+    0 0 0 1px var(--ds-border), 0 1px 1px #00000005, 0 8px 16px -4px #0000000a,
+    0 24px 32px -8px #0000000f;
+
+  /* Layout */
+  --container-page: 1200px;
+  --container-wide: 1400px;
+
+  /* Motion */
+  --ease-swift: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+@layer base {
+  * {
+    min-width: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    /* Guards against a single overflowing child creating a horizontal scrollbar. */
+    overflow-x: clip;
+  }
+
+  /*
+   * Three-weight rule (DESIGN.md §3): 400 / 500 / 600 only, never 700.
+   * Aggressive negative tracking applies at display sizes only.
+   */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    color: var(--color-fg);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(1.875rem, 1.35rem + 2.2vw, 2.75rem);
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+  }
+
+  h2 {
+    font-size: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem);
+    line-height: 1.25;
+    letter-spacing: -0.032em;
+  }
+
+  h3 {
+    font-size: 1.1875rem;
+    line-height: 1.35;
+    letter-spacing: -0.022em;
+  }
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.012em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  /*
+   * Double-ring focus (DESIGN.md §4). The inner ring uses the canvas colour so
+   * the indicator stays visible against any surface, including accent fills.
+   */
+  :focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow:
+      0 0 0 2px var(--color-canvas),
+      0 0 0 4px var(--ds-focus-color);
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background-color: var(--ds-accent-strong);
+    color: #ffffff;
+  }
+
+  ::placeholder {
+    color: var(--color-fg-muted);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer utilities {
+  /*
+   * Page shell: 1200px content width with the 24px page margin from
+   * DESIGN.md §5, tightened to 16px on small phones so a 320px viewport keeps
+   * as much usable width as possible.
+   */
+  .page-shell {
+    width: 100%;
+    max-width: var(--container-page);
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 480px) {
+    .page-shell {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  .page-shell-wide {
+    max-width: var(--container-wide);
+  }
+
+  /* Skip link — visible only while focused. */
+  .skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 100;
+    transform: translateY(-250%);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface);
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  /* Tabular figures stop converter results from jittering as digits change. */
+  .numeric {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-fg-muted) transparent;
+  }
+}
+
+/* Honour the OS reduced-motion setting everywhere (WCAG 2.2 / requirements §10). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

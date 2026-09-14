@@ -1,0 +1,9 @@
+# Normalise line endings so the repository is identical on Windows, macOS and Linux,
+# and Prettier's LF check passes everywhere.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

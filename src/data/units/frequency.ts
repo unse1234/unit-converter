@@ -1,0 +1,102 @@
+import { MINUTE_IN_SECONDS, TURN_IN_RADIANS } from '../constants';
+import { defineUnits } from '../define';
+
+/**
+ * Frequency. Base unit: hertz (SI).
+ *
+ * Revolutions per minute is a rotational rate rather than a wave frequency, but
+ * both are cycles per unit time, so the conversion is exact: 1 rpm = 1/60 Hz.
+ */
+export const frequencyUnits = defineUnits('frequency', 'hertz', [
+  {
+    id: 'hertz',
+    name: 'hertz',
+    plural: 'hertz',
+    symbol: 'Hz',
+    aliases: ['hz', 'cycles per second', 'cps'],
+    system: 'si',
+    factor: 1,
+    slug: 'hertz',
+    seo: 'primary',
+    description: 'The SI derived unit of frequency: one cycle per second.',
+  },
+  {
+    id: 'kilohertz',
+    name: 'kilohertz',
+    plural: 'kilohertz',
+    symbol: 'kHz',
+    aliases: ['khz'],
+    system: 'si',
+    factor: 1000,
+    slug: 'kilohertz',
+    seo: 'primary',
+    description: 'One thousand hertz. Used for audio sample rates and AM radio.',
+  },
+  {
+    id: 'megahertz',
+    name: 'megahertz',
+    plural: 'megahertz',
+    symbol: 'MHz',
+    aliases: ['mhz'],
+    system: 'si',
+    factor: 1e6,
+    slug: 'megahertz',
+    seo: 'primary',
+    description: 'One million hertz. Used for FM radio and memory clock speeds.',
+  },
+  {
+    id: 'gigahertz',
+    name: 'gigahertz',
+    plural: 'gigahertz',
+    symbol: 'GHz',
+    aliases: ['ghz'],
+    system: 'si',
+    factor: 1e9,
+    slug: 'gigahertz',
+    seo: 'primary',
+    description: 'One billion hertz. Used for processor and Wi-Fi frequencies.',
+  },
+  {
+    id: 'terahertz',
+    name: 'terahertz',
+    plural: 'terahertz',
+    symbol: 'THz',
+    aliases: ['thz'],
+    system: 'si',
+    factor: 1e12,
+    slug: 'terahertz',
+  },
+  {
+    id: 'rpm',
+    name: 'revolution per minute',
+    plural: 'revolutions per minute',
+    symbol: 'rpm',
+    aliases: ['rpm', 'revolutions per minute', 'rev/min', 'r/min'],
+    system: 'other',
+    factor: 1 / MINUTE_IN_SECONDS,
+    slug: 'rpm',
+    seo: 'primary',
+    description: 'One full rotation per minute: exactly 1/60 Hz. Used for engines and disk drives.',
+  },
+  {
+    id: 'rps',
+    name: 'revolution per second',
+    plural: 'revolutions per second',
+    symbol: 'rps',
+    aliases: ['rps', 'revolutions per second', 'rev/s'],
+    system: 'other',
+    factor: 1,
+    slug: 'revolutions-per-second',
+  },
+  {
+    id: 'radian-per-second',
+    name: 'radian per second',
+    plural: 'radians per second',
+    symbol: 'rad/s',
+    aliases: ['radians per second', 'rad/s', 'angular frequency'],
+    system: 'si',
+    factor: 1 / TURN_IN_RADIANS,
+    slug: 'radians-per-second',
+    description: 'Angular frequency: 2π rad/s equals one hertz.',
+  },
+]);

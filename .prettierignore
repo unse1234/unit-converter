@@ -1,0 +1,10 @@
+.next
+node_modules
+out
+coverage
+playwright-report
+test-results
+package-lock.json
+next-env.d.ts
+# The specification pack is source material, not code; keep it byte-for-byte.
+unit-converter-spec

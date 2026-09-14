@@ -1,0 +1,70 @@
+import { absoluteUrl, siteConfig } from '@/lib/site';
+
+/**
+ * Structured data.
+ *
+ * SEO_SPEC §10 allows structured data only where the schema genuinely matches
+ * the content. That limits this file to three types:
+ *
+ *  - BreadcrumbList, because the hierarchy is real and reflected in the URL.
+ *  - FAQPage, only on pages whose questions are answered from computed values.
+ *  - WebSite with SearchAction, because /search is a real, working endpoint.
+ *
+ * There is deliberately no Product, Review, Rating or HowTo markup: none of it
+ * describes this content, and fabricating it is the kind of SEO hack the spec
+ * rules out.
+ */
+
+export interface BreadcrumbEntry {
+  name: string;
+  /** Site-relative path. The final entry may omit it. */
+  path?: string;
+}
+
+export function breadcrumbSchema(entries: BreadcrumbEntry[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: entries.map((entry, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: entry.name,
+      ...(entry.path ? { item: absoluteUrl(entry.path) } : {}),
+    })),
+  };
+}
+
+export interface FaqEntry {
+  question: string;
+  answer: string;
+}
+
+export function faqSchema(entries: FaqEntry[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: entries.map((entry) => ({
+      '@type': 'Question',
+      name: entry.question,
+      acceptedAnswer: { '@type': 'Answer', text: entry.answer },
+    })),
+  };
+}
+
+export function websiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: siteConfig.description,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteConfig.url}/search?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+}
