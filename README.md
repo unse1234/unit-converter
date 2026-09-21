@@ -1,12 +1,14 @@
-# Unit Converter
+# UnitFlip
 
 A fast, accurate unit converter for the web: an instant converter on every page, exact conversion
 factors from defining authorities, and a statically generated reference page for every conversion
 people actually search for.
 
-Built with Next.js (App Router, static generation), React, TypeScript and Tailwind CSS. There is no
-backend and no database: every category and conversion page is prerendered HTML, and the
-converter runs entirely in the browser.
+Production: **https://unitflip.org**
+
+Built with Next.js (App Router, `output: 'export'`), React, TypeScript and Tailwind CSS. There is no
+backend, no database and no server at runtime: `npm run build` writes a complete static site to
+`out/`, which is deployed to Cloudflare Pages. The converter runs entirely in the browser.
 
 The product specifications this implementation follows live in [`unit-converter-spec/`](./unit-converter-spec).
 Decisions that interpret or deviate from them are recorded in [`docs/decisions.md`](./docs/decisions.md).
@@ -23,13 +25,15 @@ cp .env.example .env.local      # Windows: copy .env.example .env.local
 npm run dev                     # http://localhost:3000
 ```
 
+Every environment variable is optional — a fresh clone builds and runs with none of them set.
+
 ## Scripts
 
 | Command                    | What it does                                                  |
 | -------------------------- | ------------------------------------------------------------- |
 | `npm run dev`              | Development server with hot reload                            |
-| `npm run build`            | Production build (requires `NEXT_PUBLIC_SITE_URL`, see below) |
-| `npm run start`            | Serve the production build                                    |
+| `npm run build`            | Static export to `out/`                                       |
+| `npm run preview`          | Serve `out/` locally on port 3100                             |
 | `npm run typecheck`        | TypeScript, strict mode                                       |
 | `npm run lint`             | ESLint, including the domain-layer import boundary            |
 | `npm test`                 | Unit and integration tests (Vitest)                           |
@@ -40,12 +44,15 @@ npm run dev                     # http://localhost:3000
 
 ## Environment variables
 
-| Variable                         | Required    | Purpose                                                                                                                                                                                                                             |
-| -------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`           | For `build` | Canonical origin, no trailing slash. Canonical URLs, the sitemap, robots.txt and structured data are built from it. The build fails without it rather than baking in a wrong host. On Vercel it falls back to the project's domain. |
-| `SITE_NOINDEX`                   | No          | `true` serves `noindex` and a disallow-all robots.txt. Use on staging. Vercel preview deployments are noindexed automatically.                                                                                                      |
-| `NEXT_PUBLIC_ANALYTICS_PROVIDER` | No          | Empty (default) disables analytics completely. `debug` logs events to the console.                                                                                                                                                  |
-| `NEXT_PUBLIC_ADS_ENABLED`        | No          | `true` renders ad slots. Off by default; see [Monetization](#analytics-and-monetization).                                                                                                                                           |
+All are optional. `NEXT_PUBLIC_*` values are inlined at build time, so changing one in Cloudflare
+requires a redeploy before it takes effect.
+
+| Variable                  | Default                | Purpose                                                                                                                                       |
+| ------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_GA_ID`       | empty                  | GA4 measurement id (`G-XXXXXXXXXX`). Empty means no Google script, no cookie and no request. Set it and `<GoogleAnalytics>` renders in the layout. |
+| `NEXT_PUBLIC_SITE_URL`    | `https://unitflip.org` | Canonical origin, no trailing slash. Canonical URLs, the sitemap, robots.txt and structured data are built from it.                            |
+| `SITE_NOINDEX`            | `false`                | `true` serves `noindex` and a disallow-all robots.txt. Use on any preview or staging deployment.                                               |
+| `NEXT_PUBLIC_ADS_ENABLED` | `false`                | `true` renders ad slots. See [Monetization](#analytics-and-monetization).                                                                      |
 
 ## Testing
 
@@ -92,8 +99,12 @@ src/
   hooks/                  Client hooks: favourites, history, precision, clipboard
   lib/                    SEO, search, analytics, monitoring, storage, site configuration
   styles/globals.css      Design tokens and base styles
-  proxy.ts                Lowercase URL redirect
-  instrumentation.ts      Server-side error reporting hook
+public/
+  _headers                Cloudflare response headers, including the CSP
+  _redirects              Cloudflare redirects: www, old URLs, trailing slashes
+  ads.txt                 AdSense placeholder — add your publisher line after approval
+  opengraph-image.png     Social sharing image (see docs/social-image.md)
+  apple-icon.png          iOS home-screen icon
 tests/                    unit/, integration/, e2e/
 docs/decisions.md         Architecture decisions and deviations from the specification
 unit-converter-spec/      Product specifications
@@ -135,12 +146,14 @@ part of `npm test`.
   data can answer truthfully, and unit notes. Titles and descriptions come from
   `src/lib/seo/metadata.ts`.
 - Every page's canonical URL is its clean path. Query parameters (`?value=10`) prefill the converter
-  but never create another indexable URL, uppercase URLs redirect to lowercase, and trailing slashes
-  redirect to the slashless form.
+  but never create another indexable URL, and trailing slashes redirect to the slashless form via
+  `public/_redirects`.
 - The sitemap and robots.txt are generated from the same data, so they cannot list a page that does
   not exist.
-- Structured data is limited to what the pages genuinely contain: `BreadcrumbList`, `FAQPage` and
-  `WebSite` with a `SearchAction` for the real `/search` route.
+- Structured data is limited to what the pages genuinely contain: `BreadcrumbList` on every page
+  with a trail, `FAQPage` on conversion pages whose questions are answered from computed values,
+  and `WebSite` (with a `SearchAction` for the real `/search` route) plus `Organization` on the
+  homepage.
 - Cooking and Typography are _collections_: landing pages over Volume and Length units whose links
   point at the canonical pages in those categories, so no conversion has two URLs.
 
@@ -178,26 +191,48 @@ directions) to `EXCLUDED_PAIRS` in `src/domain/conversion/pairs.ts`. No componen
 
 ## Analytics and monetization
 
-- Components call `track(event, payload)` from `src/lib/analytics`. Events and their payloads are
-  typed in `events.ts`, and payloads never include values the user typed. Adding a provider means
-  editing the adapter in `src/lib/analytics/index.ts` only.
+- Google Analytics 4 loads through `<GoogleAnalytics>` from `@next/third-parties` in the root
+  layout, and **only** when `NEXT_PUBLIC_GA_ID` is set at build time. Unset, the site makes no
+  request to Google and sets no cookie.
+- Components call `track(event, payload)` from `src/lib/analytics`. Events and payloads are typed in
+  `events.ts`; payload keys are snake_case because that is how GA4 stores them, and payloads never
+  include values the user typed. The main event is `conversion_used`, with `from_unit` and
+  `to_unit`, emitted from the converter's 900 ms debounce rather than on every keystroke.
 - Ad placements are `AdSlot` components (`src/components/ads/AdSlot.tsx`): below the converter,
   between content sections, and in the desktop side column. Slots reserve their height to avoid
   layout shift, render nothing when disabled, and are never placed inside the converter.
-- No analytics or ad provider code is included. Enabling one requires adding its origins to the
-  Content-Security-Policy in `next.config.ts` and updating the privacy page.
+- `public/ads.txt` is a placeholder. Add the line AdSense gives you after approval.
+- Enabling another ad vendor means adding its origins to the Content-Security-Policy in
+  `public/_headers` and updating `/privacy-policy` in the same change.
 
-## Deployment
+## Deployment — Cloudflare Pages
 
-- Designed for a CDN or serverless platform such as Vercel. All category and conversion pages are
-  static; only `/search` renders per request.
-- Set `NEXT_PUBLIC_SITE_URL` to the public origin for production builds.
-- Security headers, including the Content-Security-Policy, are defined in `next.config.ts`.
-- Errors from the server and the error boundaries go through `src/lib/monitoring.ts`; connect a
-  monitoring service by replacing its `deliver` function.
-- `src/proxy.ts` only matches URLs containing uppercase letters. Next.js evaluates the matcher
-  case-sensitively; if your platform does not, the proxy still behaves correctly but runs on more
-  requests, so check this when choosing a host.
+The build produces a complete static site in `out/`. Nothing renders per request.
+
+| Setting            | Value           |
+| ------------------ | --------------- |
+| Framework preset   | Next.js (Static HTML Export) |
+| Build command      | `npm run build` |
+| Output directory   | `out`           |
+| Node version       | 20.9 or later   |
+
+Because there is no server, two Next features are replaced by Cloudflare's own files:
+
+- **Response headers**, including the Content-Security-Policy, live in `public/_headers`.
+  `next.config.ts`'s `headers()` is never called by an export.
+- **Redirects** live in `public/_redirects`, covering the `www` host, the old `/privacy` URL and
+  trailing slashes.
+
+Both are copied verbatim into `out/`. Changing a security header means editing `public/_headers`.
+
+Errors from the error boundaries go through `src/lib/monitoring.ts`; connect a monitoring service by
+replacing its `deliver` function.
+
+### What static export rules out
+
+Do not add any of these without moving the site off a static export first: API routes, server
+actions, middleware/proxy, ISR or `revalidate`, `cookies()`/`headers()`, `searchParams` in a server
+component, or `next/image` optimisation (`images.unoptimized` is on).
 
 ## Toolchain notes
 

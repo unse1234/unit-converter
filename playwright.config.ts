@@ -1,9 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * End-to-end tests run against a production build (`npm run build` first),
- * because that is what users get: development mode has different rendering,
- * no minification and extra warnings.
+ * End-to-end tests run against the static export (`npm run build` first),
+ * served as plain files — which is exactly what Cloudflare Pages serves.
+ * Development mode has different rendering, no minification and extra
+ * warnings, and `next start` does not work with `output: 'export'` at all.
+ *
+ * `serve` is used rather than a Next server so the tests exercise the real
+ * artefact, including the extensionless-versus-.html resolution that a static
+ * host performs.
  *
  * Port 3100 keeps the test server clear of a dev server on 3000.
  */
@@ -31,7 +36,9 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: `npm run start -- --port ${PORT}`,
+    // `serve` maps /length to out/length.html and /404.html to unmatched
+    // paths, the same way Cloudflare Pages does.
+    command: `npx --yes serve out -l ${PORT} --no-clipboard`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

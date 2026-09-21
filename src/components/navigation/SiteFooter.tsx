@@ -75,11 +75,18 @@ export function SiteFooter() {
             © {new Date().getFullYear()} {siteConfig.name}
           </p>
           <nav aria-label="Site information">
-            <ul className="flex flex-wrap gap-x-5 gap-y-2">
+            <ul className="flex flex-wrap items-center gap-x-5">
               {infoLinks.map((link) => (
                 <li key={link.href}>
-                  {/* py-1 brings each link to a 44px row on touch screens. */}
-                  <Link href={link.href} className="hover:text-accent inline-block py-1">
+                  {/*
+                    min-h-11 is a full 44px tap target. These sit in a wrapping
+                    row, so the height is real rather than an extended hit area
+                    — an overlay would overlap the row above once wrapped.
+                  */}
+                  <Link
+                    href={link.href}
+                    className="hover:text-accent inline-flex min-h-11 items-center"
+                  >
                     {link.label}
                   </Link>
                 </li>

@@ -77,8 +77,10 @@ describe('conversion page metadata', () => {
     for (const pair of pairs) {
       const from = requireUnit(pair.fromUnitId);
       const to = requireUnit(pair.toUnitId);
-      // The layout template appends " | Unit Converter" (17 characters).
-      expect(conversionPageTitle(from, to).length + 17).toBeLessThanOrEqual(90);
+      // The layout template appends " | <site name>"; count it in, derived
+      // from the config so a rename cannot silently break the budget.
+      const suffix = ` | ${siteConfig.name}`.length;
+      expect(conversionPageTitle(from, to).length + suffix).toBeLessThanOrEqual(90);
       expect(conversionPageDescription(from, to).length).toBeLessThanOrEqual(200);
     }
   });

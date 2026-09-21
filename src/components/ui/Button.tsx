@@ -21,11 +21,14 @@ const variants: Record<ButtonVariant, string> = {
   danger: 'bg-transparent text-danger shadow-border hover:bg-danger-subtle',
 };
 
+/*
+ * Visual heights. On a touch screen the `tap-target` class in globals.css
+ * lifts anything under 44px to a 44px hit area without changing these.
+ */
 const sizes: Record<ButtonSize, string> = {
   sm: 'h-8 px-3 text-sm gap-1.5',
   md: 'h-10 px-4 text-sm gap-2',
   lg: 'h-12 px-5 text-base gap-2',
-  // 40px square keeps icon-only controls at a comfortable touch target.
   icon: 'h-10 w-10 justify-center',
 };
 
@@ -47,7 +50,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex shrink-0 items-center rounded-md font-medium whitespace-nowrap',
+        'tap-target inline-flex shrink-0 items-center rounded-md font-medium whitespace-nowrap',
         'transition-colors duration-150',
         'disabled:cursor-not-allowed disabled:opacity-60',
         variants[variant],

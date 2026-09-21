@@ -25,7 +25,9 @@ const PAGES = [
   '/fuel-economy/liters-per-100-kilometers-to-miles-per-us-gallon',
   '/search?q=kg',
   '/about',
-  '/privacy',
+  '/contact',
+  '/privacy-policy',
+  '/terms',
 ];
 
 test.describe('light theme', () => {
