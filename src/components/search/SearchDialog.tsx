@@ -103,7 +103,7 @@ export function SearchDialog({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     if (query.trim().length < 2) return;
     const timer = setTimeout(
-      () => track('search_used', { resultCount: results.length, matched: results.length > 0 }),
+      () => track('search_used', { result_count: results.length, matched: results.length > 0 }),
       700,
     );
     return () => clearTimeout(timer);

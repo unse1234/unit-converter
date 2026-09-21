@@ -101,8 +101,8 @@ export function useFavorites() {
 
     track(exists ? 'favorite_removed' : 'favorite_added', {
       category: entry.category,
-      from: entry.from,
-      to: entry.to,
+      from_unit: entry.from,
+      to_unit: entry.to,
     });
   }, []);
 

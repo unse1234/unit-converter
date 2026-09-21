@@ -36,10 +36,10 @@ interface PageMetaInput {
  * carry one.
  */
 const SOCIAL_IMAGE = {
-  url: '/opengraph-image',
+  url: '/opengraph-image.png',
   width: 1200,
   height: 630,
-  alt: `${siteConfig.name} — exact conversions with formulas and reference tables`,
+  alt: `${siteConfig.name} — free online unit converter with formulas and reference tables`,
 };
 
 export function buildMetadata({

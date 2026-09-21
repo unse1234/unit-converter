@@ -4,6 +4,9 @@ import { ImageResponse } from 'next/og';
  * Home-screen icon for iOS, which does not accept SVG. Drawn with the same
  * swap glyph as icon.svg and generated as a static PNG at build time.
  */
+// A generated image route must declare itself static for `output: export`;
+// without this the build refuses to prerender it.
+export const dynamic = 'force-static';
 export const size = { width: 180, height: 180 };
 export const contentType = 'image/png';
 

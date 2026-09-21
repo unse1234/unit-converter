@@ -31,9 +31,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env
-.env
-.env*.local
+# env — every .env file is local, except the committed template
+.env*
+!.env.example
 
 # editor
 .vscode/*

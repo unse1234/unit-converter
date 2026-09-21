@@ -1,0 +1,17 @@
+# ads.txt — Authorized Digital Sellers (IAB Tech Lab)
+#
+# PLACEHOLDER. This file is intentionally empty of records.
+#
+# After your Google AdSense account is approved, AdSense shows you a line to
+# add here. It looks like this, with your own publisher id in place of the
+# zeros:
+#
+#   google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+#
+# Find it at: AdSense -> Sites -> (your site) -> "Fix ads.txt file".
+# Add the line below this comment block, commit, and redeploy. Until then
+# AdSense will warn that earnings are at risk; the warning is expected and
+# nothing is broken.
+#
+# Every ad network you work with needs its own line. Lines starting with # are
+# comments and are ignored by crawlers.

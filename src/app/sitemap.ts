@@ -14,13 +14,19 @@ import { absoluteUrl } from '@/lib/site';
  * Next splits this automatically once it grows past the 50,000-URL limit, so
  * the approach scales without a manual sitemap index.
  */
+// A static export prerenders this once at build time; nothing here reads a
+// request, but the flag makes that explicit and keeps the export honest.
+export const dynamic = 'force-static';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
   const staticPages: MetadataRoute.Sitemap = [
     { url: absoluteUrl('/'), lastModified, changeFrequency: 'weekly', priority: 1 },
     { url: absoluteUrl('/about'), lastModified, changeFrequency: 'yearly', priority: 0.3 },
-    { url: absoluteUrl('/privacy'), lastModified, changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/contact'), lastModified, changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/privacy-policy'), lastModified, changeFrequency: 'yearly', priority: 0.2 },
+    { url: absoluteUrl('/terms'), lastModified, changeFrequency: 'yearly', priority: 0.2 },
   ];
 
   const categoryPages: MetadataRoute.Sitemap = getCategories().map((category) => ({

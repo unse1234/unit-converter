@@ -1,0 +1,25 @@
+# Cloudflare Pages redirects.
+#
+# A static export has no server, so next.config.ts's redirects() is never
+# called. This file is the only place redirects are defined. Cloudflare reads
+# it from the root of the published directory.
+#
+# Format: <from> <to> <status>. The first matching line wins, so the specific
+# rules come before the wildcards. Cloudflare allows 2,100 rules, of which 100
+# may contain a splat or a placeholder.
+
+# --- Canonical host ---------------------------------------------------------
+# www is a second address for the same site; fold it into the bare domain.
+# Requires www.unitflip.org to be added as a custom domain on the Pages project,
+# otherwise nothing resolves there for this rule to catch.
+https://www.unitflip.org/* https://unitflip.org/:splat 301!
+http://www.unitflip.org/* https://unitflip.org/:splat 301!
+
+# --- Old URLs ---------------------------------------------------------------
+# The privacy page moved to /privacy-policy when the legal pages were added.
+/privacy /privacy-policy 301
+
+# --- Trailing slashes -------------------------------------------------------
+# The build emits /length, not /length/. Strip the slash so a linked or typed
+# trailing-slash URL resolves to the canonical one rather than 404ing.
+/*/ /:splat 301

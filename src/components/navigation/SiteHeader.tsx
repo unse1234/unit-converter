@@ -29,7 +29,7 @@ export function SiteHeader() {
           >
             <SwapIcon size={16} strokeWidth={2} />
           </span>
-          <span>Unit Converter</span>
+          <span>UnitFlip</span>
         </Link>
 
         <nav aria-label="Categories" className="ml-2 hidden lg:block">

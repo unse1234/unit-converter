@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getCategories, getCollections } from '@/domain/units/registry';
+import { siteConfig } from '@/lib/site';
 
 /**
  * Site footer.
@@ -18,12 +19,20 @@ export function SiteFooter() {
     { title: 'Electrical & physics', items: categories.slice(20) },
   ];
 
+  const infoLinks = [
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
+    { href: '/privacy-policy', label: 'Privacy Policy' },
+    { href: '/terms', label: 'Terms' },
+    { href: '/search', label: 'Search' },
+  ];
+
   return (
     <footer className="mt-16 shadow-[0_-1px_0_0_var(--ds-border)]">
       <div className="page-shell py-10">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="text-fg text-sm font-medium">Unit Converter</p>
+            <p className="text-fg text-sm font-medium">{siteConfig.name}</p>
             <p className="text-fg-subtle mt-2 max-w-xs text-sm leading-relaxed">
               Exact conversion factors, clear formulas and reference tables. No sign-up, and it
               works on any device.
@@ -62,24 +71,19 @@ export function SiteFooter() {
         </div>
 
         <div className="text-fg-subtle mt-10 flex flex-col gap-3 pt-6 text-sm shadow-[0_-1px_0_0_var(--ds-border)] sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Unit Converter</p>
+          <p>
+            © {new Date().getFullYear()} {siteConfig.name}
+          </p>
           <nav aria-label="Site information">
             <ul className="flex flex-wrap gap-x-5 gap-y-2">
-              <li>
-                <Link href="/about" className="hover:text-accent">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="hover:text-accent">
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link href="/search" className="hover:text-accent">
-                  Search
-                </Link>
-              </li>
+              {infoLinks.map((link) => (
+                <li key={link.href}>
+                  {/* py-1 brings each link to a 44px row on touch screens. */}
+                  <Link href={link.href} className="hover:text-accent inline-block py-1">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>

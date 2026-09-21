@@ -9,7 +9,7 @@ import {
 } from '@/domain/units/registry';
 import { pairLabel } from '@/lib/seo/labels';
 import { buildMetadata } from '@/lib/seo/metadata';
-import { websiteSchema } from '@/lib/seo/structured-data';
+import { organizationSchema, websiteSchema } from '@/lib/seo/structured-data';
 import { siteConfig } from '@/lib/site';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { Converter } from '@/components/converter/Converter';
@@ -18,7 +18,7 @@ import { CategoryIcon } from '@/components/ui/icons';
 import { LinkCard, Section } from '@/components/ui/primitives';
 
 export const metadata: Metadata = buildMetadata({
-  title: `${siteConfig.name} — Fast, accurate unit conversion`,
+  title: siteConfig.defaultTitle,
   absoluteTitle: true,
   description: siteConfig.description,
   path: '/',
@@ -48,6 +48,7 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={websiteSchema()} />
+      <JsonLd data={organizationSchema()} />
 
       <section className="page-shell pt-8 pb-10 sm:pt-12">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:items-center lg:gap-12">

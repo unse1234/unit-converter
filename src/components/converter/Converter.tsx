@@ -185,7 +185,7 @@ export function Converter({
             ? selectionHref
             : `${selectionHref}${separator}value=${encodeURIComponent(value)}`,
       });
-      track('conversion_completed', { category: categoryId, from: from.id, to: to.id });
+      track('conversion_used', { category: categoryId, from_unit: from.id, to_unit: to.id });
     }, 900);
 
     return () => clearTimeout(timer);
@@ -198,7 +198,7 @@ export function Converter({
   const noteInteraction = useCallback(() => {
     if (interactedRef.current || !from || !to) return;
     interactedRef.current = true;
-    track('conversion_started', { category: categoryId, from: from.id, to: to.id });
+    track('conversion_started', { category: categoryId, from_unit: from.id, to_unit: to.id });
   }, [from, to, categoryId]);
 
   const changeValue = useCallback(
@@ -239,7 +239,7 @@ export function Converter({
   const swap = useCallback(() => {
     if (!from || !to) return;
     noteInteraction();
-    track('swap_clicked', { category: categoryId, from: from.id, to: to.id });
+    track('swap_clicked', { category: categoryId, from_unit: from.id, to_unit: to.id });
     setFromId(to.id);
     setToId(from.id);
   }, [from, to, categoryId, noteInteraction]);
@@ -247,7 +247,7 @@ export function Converter({
   const onCopy = useCallback(() => {
     if (!formatted || !from || !to) return;
     void copy(formatted.plain);
-    track('result_copied', { category: categoryId, from: from.id, to: to.id });
+    track('result_copied', { category: categoryId, from_unit: from.id, to_unit: to.id });
   }, [formatted, copy, categoryId, from, to]);
 
   if (!from || !to) return null;

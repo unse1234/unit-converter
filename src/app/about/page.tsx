@@ -86,10 +86,12 @@ export default function AboutPage() {
           <Section title="Privacy and cost">
             <Prose>
               <p>
-                No account, no tracking cookies, and nothing you type is sent anywhere — every
-                conversion runs in your browser. Favourites, recent conversions and your theme
-                choice are stored on your own device and never leave it. See the{' '}
-                <Link href="/privacy">privacy page</Link> for details.
+                Free to use, with no account and nothing to install. Nothing you type is sent
+                anywhere — every conversion runs in your browser — and your favourites, recent
+                conversions and theme choice are stored on your own device and never leave it.
+                Advertising and analytics from Google keep the site running and do set cookies;
+                the <Link href="/privacy-policy">privacy policy</Link> explains exactly what they
+                collect and how to opt out.
               </p>
             </Prose>
           </Section>

@@ -1,0 +1,64 @@
+# Cloudflare Pages response headers.
+#
+# A static export has no server, so next.config.ts's headers() is never called.
+# This file is the only place response headers are set. Cloudflare reads it
+# from the root of the published directory.
+#
+# Rules are matched most-specific-first, and only ONE rule applies per request,
+# so any path-specific block below must repeat the security headers it needs.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=63072000
+  # Content-Security-Policy.
+  #
+  # script-src allows 'unsafe-inline' deliberately: a nonce needs a fresh value
+  # per response, which a static export cannot produce. The site renders no
+  # user-supplied HTML, and the inline scripts are Next's own payload, the
+  # theme initialiser and the Google tag.
+  #
+  # The Google origins below are what Analytics and AdSense need. Removing
+  # AdSense means removing its origins here too; adding another ad vendor means
+  # adding theirs, or its frames and images are blocked with no visible error.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://partner.googleadservices.com https://tpc.googlesyndication.com https://adservice.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://www.google.com https://tpc.googlesyndication.com; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com; manifest-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
+# Build assets carry a content hash in their file name, so a given URL can
+# never change contents. Cache them for a year and never revalidate.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# The Geist font files are also content-addressed.
+/_next/static/media/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+  X-Content-Type-Options: nosniff
+
+# The search index is rebuilt with the site. Let browsers reuse it for a day
+# and let the CDN serve a stale copy while it fetches a fresh one.
+/search-index.json
+  Cache-Control: public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800
+  X-Content-Type-Options: nosniff
+
+# Generated icons and the sharing image change only on a rebuild.
+/opengraph-image.png
+  Cache-Control: public, max-age=86400
+/apple-icon.png
+  Cache-Control: public, max-age=86400
+/icon.svg
+  Cache-Control: public, max-age=86400
+
+# Crawler-facing files: short cache so a change is picked up quickly.
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+/robots.txt
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff
+/ads.txt
+  Cache-Control: public, max-age=3600
+  X-Content-Type-Options: nosniff

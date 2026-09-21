@@ -97,8 +97,8 @@ export function ConversionShortcuts({
                   onClick={() =>
                     track('recent_conversion_used', {
                       category: entry.category,
-                      from: entry.from,
-                      to: entry.to,
+                      from_unit: entry.from,
+                      to_unit: entry.to,
                     })
                   }
                   className="text-fg-secondary shadow-border hover:bg-hover hover:text-fg inline-flex min-h-9 items-center rounded-full px-3 text-sm transition-colors"

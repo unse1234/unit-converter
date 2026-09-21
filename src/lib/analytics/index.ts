@@ -4,51 +4,41 @@ import type { AnalyticsEventName, AnalyticsEvents } from './events';
 /**
  * Analytics facade.
  *
- * Components call `track` and know nothing about the provider. Swapping or
- * adding a vendor means editing the adapter below and nothing else, which is
- * what ARCHITECTURE.md §11 asks for.
+ * Components call `track` and know nothing about the provider. The GA4 script
+ * itself is loaded by <GoogleAnalytics> in the root layout; this module only
+ * pushes events onto the dataLayer queue it creates.
  *
- * No provider ships by default. With NEXT_PUBLIC_ANALYTICS_PROVIDER unset,
- * every call is a no-op: no network request, no third-party script, no cookie
- * banner obligation, and no effect on Core Web Vitals.
+ * With NEXT_PUBLIC_GA_ID unset, every call is a no-op: no network request, no
+ * third-party script, no cookie, and no effect on Core Web Vitals.
  */
 
 export type { AnalyticsEventName, AnalyticsEvents } from './events';
 
 type Adapter = <E extends AnalyticsEventName>(event: E, payload: AnalyticsEvents[E]) => void;
 
-/** Discards everything. The default. */
+/** Discards everything. The default when no measurement id is configured. */
 const noopAdapter: Adapter = () => {};
 
-/** Logs to the console during development so events can be verified. */
-const debugAdapter: Adapter = (event, payload) => {
-  // eslint-disable-next-line no-console
-  console.info('[analytics]', event, payload);
-};
-
 /**
- * Hands events to a provider script that exposes a global queue. Nothing
- * loads that script yet — this is the seam a real provider plugs into, and it
- * fails silently when the global is absent.
+ * Pushes onto GA4's dataLayer, in the shape gtag.js expects.
+ *
+ * gtag reads each queued entry as the argument list of a gtag() call, so an
+ * event is pushed as ["event", name, params] rather than as a plain object —
+ * an object with an `event` key is Tag Manager's format and gtag would ignore
+ * it. This is the same push @next/third-parties' own sendGAEvent performs.
+ *
+ * Queueing directly rather than calling window.gtag means an event fired
+ * before the GA script finishes loading is still delivered: the array exists
+ * from the moment the inline snippet runs, and GA drains it on load.
  */
-const globalQueueAdapter: Adapter = (event, payload) => {
+const googleAnalyticsAdapter: Adapter = (event, payload) => {
   if (typeof window === 'undefined') return;
-  const queue = (window as unknown as { __analyticsQueue?: unknown[] }).__analyticsQueue;
-  if (Array.isArray(queue)) queue.push({ event, payload, at: Date.now() });
+  const target = window as unknown as { dataLayer?: unknown[] };
+  target.dataLayer = target.dataLayer ?? [];
+  target.dataLayer.push(['event', event, payload]);
 };
 
-function selectAdapter(): Adapter {
-  switch (siteConfig.analyticsProvider) {
-    case 'debug':
-      return debugAdapter;
-    case 'queue':
-      return globalQueueAdapter;
-    default:
-      return noopAdapter;
-  }
-}
-
-const adapter = selectAdapter();
+const adapter: Adapter = siteConfig.gaId ? googleAnalyticsAdapter : noopAdapter;
 
 /** Records a product event. Safe to call from anywhere, including the server. */
 export function track<E extends AnalyticsEventName>(event: E, payload: AnalyticsEvents[E]): void {

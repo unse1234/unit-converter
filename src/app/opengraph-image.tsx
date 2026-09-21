@@ -1,12 +1,16 @@
 import { ImageResponse } from 'next/og';
 import { getCategories } from '@/domain/units/registry';
+import { siteConfig } from '@/lib/site';
 
 /**
  * Social sharing image, generated once at build time and inherited by every
  * page that does not provide its own. Built from the design tokens rather than
  * a stored bitmap, so it stays in step with the product.
  */
-export const alt = 'Unit Converter — exact conversions with formulas and reference tables';
+export const alt = `${siteConfig.name} — free online unit converter with formulas and reference tables`;
+// A generated image route must declare itself static for `output: export`;
+// without this the build refuses to prerender it.
+export const dynamic = 'force-static';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -52,7 +56,7 @@ export default function OpenGraphImage() {
             <path d="M17 20V4m0 0-3.5 3.5M17 4l3.5 3.5" />
           </svg>
         </div>
-        <div style={{ fontSize: '40px' }}>Unit Converter</div>
+        <div style={{ fontSize: '40px', fontWeight: 600 }}>{siteConfig.name}</div>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
