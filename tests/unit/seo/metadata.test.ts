@@ -132,9 +132,17 @@ describe('sitemap', () => {
   const urls = entries.map((entry) => entry.url);
 
   it('lists every category, collection and conversion page exactly once', () => {
-    const expected = 1 + 2 + getCategories().length + getCollections().length + pairs.length;
+    // Home, plus the four standalone pages: about, contact, privacy policy, terms.
+    const standalone = 1 + 4;
+    const expected = standalone + getCategories().length + getCollections().length + pairs.length;
     expect(entries.length).toBe(expected);
     expect(new Set(urls).size).toBe(urls.length);
+  });
+
+  it('includes every page linked from the footer', () => {
+    for (const path of ['/', '/about', '/contact', '/privacy-policy', '/terms']) {
+      expect(urls).toContain(absoluteUrl(path));
+    }
   });
 
   it('uses absolute URLs on the canonical origin with no query strings', () => {
@@ -158,12 +166,20 @@ describe('sitemap', () => {
 });
 
 describe('robots.txt', () => {
-  it('allows crawling, blocks search results and points at the sitemap', () => {
+  it('allows crawling everything and points at the sitemap', () => {
     const result = robots();
     const rules = Array.isArray(result.rules) ? result.rules : [result.rules];
     expect(rules[0]?.allow).toBe('/');
-    expect(rules[0]?.disallow).toEqual(['/search']);
     expect(result.sitemap).toBe(absoluteUrl('/sitemap.xml'));
+  });
+
+  it('does not block /search, so its noindex tag stays readable', () => {
+    // A path disallowed in robots.txt is never fetched, so Google never sees
+    // the noindex on it and the URL can still appear in results. The meta tag
+    // is what keeps search pages out of the index, not this file.
+    const result = robots();
+    const rules = Array.isArray(result.rules) ? result.rules : [result.rules];
+    expect(rules[0]?.disallow).toBeUndefined();
   });
 });
 
