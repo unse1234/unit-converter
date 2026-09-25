@@ -15,3 +15,4 @@
 #
 # Every ad network you work with needs its own line. Lines starting with # are
 # comments and are ignored by crawlers.
+google.com, pub-2972737887770795, DIRECT, f08c47fec0942fa0
