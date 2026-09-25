@@ -185,3 +185,24 @@ not to create fake FAQs rule out questions whose answers do not match them.
 
 **Why.** `typescript-eslint` does not support the TypeScript 7 API, and the React plugin bundled with
 `eslint-config-next` uses APIs removed in ESLint 10.
+
+## 20. Localized sections in their own folders, with their own root layouts
+
+**Context.** The multilingual market research (docs/multilingual-seo.md) picked five launch
+languages: Spanish, Brazilian Portuguese, Italian, French and Indonesian.
+
+**Decision.** Each language lives under its own prefix (`/es`, `/pt`, `/it`, `/fr`, `/id`) with native
+category and pair slugs that mirror the query's connector (`/es/longitud/pulgadas-a-cm`,
+`/pt/comprimento/polegadas-em-cm`, `/id/panjang/10-inch-berapa-cm`). English stays at the root, so no
+existing URL changes. The English routes moved into the `(main)` route group and every language has a
+root layout of its own under `(localized)/<code>`; unmatched URLs are served by
+`app/global-not-found.tsx`.
+
+**Why.** `<html lang>` can only be set by a root layout, and a Spanish page must not ship as
+`lang="en"`. A single `[locale]` segment would collide with the English `[category]` segment, so each
+language gets a static folder whose files are a few lines delegating to `src/i18n/routes.ts`.
+
+**Consequence.** Pages are data: `src/i18n/locales/<code>.ts` lists the pairs, single-value pages and
+TV sizes, and every number is computed by the conversion engine. Pages that translate each other
+share an hreflang cluster (`src/i18n/pages.ts`); English is x-default wherever it has an equivalent.
+Moving between languages is a full page load, which is how Next handles different root layouts.

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { getCategories } from '@/domain/units/registry';
+import { siteLanguages } from '@/i18n/config';
+import { LanguageMenu } from '@/components/i18n/LanguageMenu';
 import { SearchTrigger } from '@/components/search/SearchTrigger';
 import { ThemeToggle } from '@/components/theme/theme';
 import { SwapIcon } from '@/components/ui/icons';
@@ -8,8 +10,8 @@ import { MobileNav } from './MobileNav';
 /**
  * Site header.
  *
- * Server-rendered apart from three small islands: search, the theme toggle and
- * the mobile drawer. Category links are plain anchors, so navigation works
+ * Server-rendered apart from four small islands: search, the language menu,
+ * the theme toggle and the mobile drawer. Category links are plain anchors, so navigation works
  * before any JavaScript has loaded.
  */
 export function SiteHeader() {
@@ -49,6 +51,7 @@ export function SiteHeader() {
 
         <div className="ml-auto flex items-center gap-1">
           <SearchTrigger />
+          <LanguageMenu current="en" languages={siteLanguages()} label="Language" />
           <ThemeToggle />
           <MobileNav
             categories={categories.map((category) => ({

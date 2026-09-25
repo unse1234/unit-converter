@@ -52,6 +52,32 @@ export function faqSchema(entries: FaqEntry[]) {
   };
 }
 
+/**
+ * A page in a given language. Used on the localized pages, where it states the
+ * page's language and ties it to the one site it belongs to.
+ */
+export function webPageSchema({
+  name,
+  description,
+  path,
+  language,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  language: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name,
+    description,
+    url: absoluteUrl(path),
+    inLanguage: language,
+    isPartOf: { '@id': WEBSITE_ID },
+  };
+}
+
 /** Stable node ids, so WebSite and Organization can reference each other. */
 const ORGANIZATION_ID = `${siteConfig.url}/#organization`;
 const WEBSITE_ID = `${siteConfig.url}/#website`;

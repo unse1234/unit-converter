@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getCategories, getCollections } from '@/domain/units/registry';
+import { siteLanguages } from '@/i18n/config';
 import { siteConfig } from '@/lib/site';
 
 /**
@@ -46,6 +47,22 @@ export function SiteFooter() {
                   >
                     {collection.name} conversions
                   </Link>
+                </li>
+              ))}
+            </ul>
+            <h2 className="text-fg mt-6 text-sm font-medium">Languages</h2>
+            <ul className="mt-3 space-y-2 text-sm">
+              {siteLanguages().map((language) => (
+                <li key={language.code}>
+                  <a
+                    href={language.href}
+                    hrefLang={language.code}
+                    lang={language.code}
+                    aria-current={language.code === 'en' ? 'true' : undefined}
+                    className="text-fg-secondary hover:text-accent"
+                  >
+                    {language.name}
+                  </a>
                 </li>
               ))}
             </ul>

@@ -3,6 +3,7 @@ import { convertUnits, hasSimpleRatio } from '@/domain/conversion/engine';
 import { formatNumber } from '@/domain/conversion/format';
 import type { ConversionPair } from '@/types/conversion';
 import type { CategoryDefinition, CollectionDefinition, UnitDefinition } from '@/types/units';
+import { getEnglishPageAlternates, hreflangMap } from '@/i18n/pages';
 import { absoluteUrl, siteConfig } from '@/lib/site';
 import { buildFormula } from './formula';
 import { pairPhrase, unitHeadingName } from './labels';
@@ -50,11 +51,14 @@ export function buildMetadata({
   absoluteTitle,
 }: PageMetaInput): Metadata {
   const url = absoluteUrl(path);
+  // Pages with a translation list every language version (hreflang), English
+  // as x-default. Search and other pages without one list only the canonical.
+  const languages = noIndex ? undefined : hreflangMap(getEnglishPageAlternates(path), absoluteUrl);
 
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, ...(languages ? { languages } : {}) },
     openGraph: {
       type: 'website',
       title,

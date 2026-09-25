@@ -60,6 +60,9 @@ export default function nextConfig(phase: string): NextConfig {
     trailingSlash: false,
     experimental: {
       optimizePackageImports: ['geist'],
+      // The site has one root layout per language, so the 404 for unmatched
+      // URLs comes from app/global-not-found.tsx rather than a root layout.
+      globalNotFound: true,
     },
   };
 }

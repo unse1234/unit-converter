@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import robots from '@/app/robots';
 import sitemap from '@/app/sitemap';
+import { getLocalizedPages } from '@/i18n/pages';
 import { getAllConversionPairs } from '@/domain/conversion/pairs';
 import { getCategories, getCollections, requireUnit } from '@/domain/units/registry';
 import {
@@ -133,10 +134,15 @@ describe('sitemap', () => {
   const entries = sitemap();
   const urls = entries.map((entry) => entry.url);
 
-  it('lists every category, collection and conversion page exactly once', () => {
+  it('lists every category, collection, conversion and localized page exactly once', () => {
     // Home, plus the four standalone pages: about, contact, privacy policy, terms.
     const standalone = 1 + 4;
-    const expected = standalone + getCategories().length + getCollections().length + pairs.length;
+    const expected =
+      standalone +
+      getCategories().length +
+      getCollections().length +
+      pairs.length +
+      getLocalizedPages().length;
     expect(entries.length).toBe(expected);
     expect(new Set(urls).size).toBe(urls.length);
   });
