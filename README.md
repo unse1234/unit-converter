@@ -29,30 +29,30 @@ Every environment variable is optional — a fresh clone builds and runs with no
 
 ## Scripts
 
-| Command                    | What it does                                                  |
-| -------------------------- | ------------------------------------------------------------- |
-| `npm run dev`              | Development server with hot reload                            |
-| `npm run build`            | Static export to `out/`                                       |
-| `npm run preview`          | Serve `out/` locally on port 3100                             |
-| `npm run typecheck`        | TypeScript, strict mode                                       |
-| `npm run lint`             | ESLint, including the domain-layer import boundary            |
-| `npm test`                 | Unit and integration tests (Vitest)                           |
-| `npm run test:e2e`         | End-to-end tests against the production build (Playwright)    |
-| `npm run test:e2e:install` | Installs the Chromium build Playwright uses (first run only)  |
-| `npm run format`           | Formats the codebase with Prettier                            |
-| `npm run validate`         | Typecheck, lint, unit tests and build, in that order          |
+| Command                    | What it does                                                 |
+| -------------------------- | ------------------------------------------------------------ |
+| `npm run dev`              | Development server with hot reload                           |
+| `npm run build`            | Static export to `out/`                                      |
+| `npm run preview`          | Serve `out/` locally on port 3100                            |
+| `npm run typecheck`        | TypeScript, strict mode                                      |
+| `npm run lint`             | ESLint, including the domain-layer import boundary           |
+| `npm test`                 | Unit and integration tests (Vitest)                          |
+| `npm run test:e2e`         | End-to-end tests against the production build (Playwright)   |
+| `npm run test:e2e:install` | Installs the Chromium build Playwright uses (first run only) |
+| `npm run format`           | Formats the codebase with Prettier                           |
+| `npm run validate`         | Typecheck, lint, unit tests and build, in that order         |
 
 ## Environment variables
 
 All are optional. `NEXT_PUBLIC_*` values are inlined at build time, so changing one in Cloudflare
 requires a redeploy before it takes effect.
 
-| Variable                  | Default                | Purpose                                                                                                                                       |
-| ------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Variable                  | Default                | Purpose                                                                                                                                            |
+| ------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `NEXT_PUBLIC_GA_ID`       | empty                  | GA4 measurement id (`G-XXXXXXXXXX`). Empty means no Google script, no cookie and no request. Set it and `<GoogleAnalytics>` renders in the layout. |
-| `NEXT_PUBLIC_SITE_URL`    | `https://unitflip.org` | Canonical origin, no trailing slash. Canonical URLs, the sitemap, robots.txt and structured data are built from it.                            |
-| `SITE_NOINDEX`            | `false`                | `true` serves `noindex` and a disallow-all robots.txt. Use on any preview or staging deployment.                                               |
-| `NEXT_PUBLIC_ADS_ENABLED` | `false`                | `true` renders ad slots. See [Monetization](#analytics-and-monetization).                                                                      |
+| `NEXT_PUBLIC_SITE_URL`    | `https://unitflip.org` | Canonical origin, no trailing slash. Canonical URLs, the sitemap, robots.txt and structured data are built from it.                                |
+| `SITE_NOINDEX`            | `false`                | `true` serves `noindex` and a disallow-all robots.txt. Use on any preview or staging deployment.                                                   |
+| `NEXT_PUBLIC_ADS_ENABLED` | `false`                | `true` renders ad slots. See [Monetization](#analytics-and-monetization).                                                                          |
 
 ## Testing
 
@@ -81,8 +81,10 @@ Content-Security-Policy violations. The suites cover:
 ```text
 src/
   app/                    Routes, metadata, sitemap, robots, manifest, icons, error boundaries
-    [category]/           Category and collection pages
-      [conversion]/       Conversion pages — one template for every pair
+    (main)/               English site: root layout, home, legal pages
+      [category]/         Category and collection pages
+        [conversion]/     Conversion pages — one template for every pair
+    (localized)/<code>/   One root layout and three routes per language (es, pt, it, fr, id)
   components/
     converter/            The interactive converter (the only substantial client component)
     content/              Server-rendered page content: tables, FAQ, directories
@@ -97,6 +99,7 @@ src/
     conversion/           Engine, formatting, parsing, custom conversions, page-pair rules
     units/                Registry and catalog validation
   hooks/                  Client hooks: favourites, history, precision, clipboard
+  i18n/                   Localized sections: languages, page specs, content, hreflang
   lib/                    SEO, search, analytics, monitoring, storage, site configuration
   styles/globals.css      Design tokens and base styles
 public/
@@ -157,6 +160,13 @@ part of `npm test`.
 - Cooking and Typography are _collections_: landing pages over Volume and Length units whose links
   point at the canonical pages in those categories, so no conversion has two URLs.
 
+## Languages
+
+Besides English, the site is published in Spanish (`/es`), Brazilian Portuguese (`/pt`), Italian
+(`/it`), French (`/fr`) and Indonesian (`/id`), with native slugs, keywords from the market
+research, local units and hreflang between translations. See
+[`docs/multilingual-seo.md`](./docs/multilingual-seo.md) and decision 20 in `docs/decisions.md`.
+
 ## Extending the catalog
 
 ### Add a unit
@@ -209,12 +219,12 @@ directions) to `EXCLUDED_PAIRS` in `src/domain/conversion/pairs.ts`. No componen
 
 The build produces a complete static site in `out/`. Nothing renders per request.
 
-| Setting            | Value           |
-| ------------------ | --------------- |
-| Framework preset   | Next.js (Static HTML Export) |
-| Build command      | `npm run build` |
-| Output directory   | `out`           |
-| Node version       | 20.9 or later   |
+| Setting          | Value                        |
+| ---------------- | ---------------------------- |
+| Framework preset | Next.js (Static HTML Export) |
+| Build command    | `npm run build`              |
+| Output directory | `out`                        |
+| Node version     | 20.9 or later                |
 
 Because there is no server, two Next features are replaced by Cloudflare's own files:
 
