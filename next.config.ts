@@ -1,8 +1,9 @@
 import type { NextConfig } from 'next';
 import { PHASE_PRODUCTION_BUILD } from 'next/constants';
+import { assertProductionOrigin } from './src/lib/site-origin';
 
 /**
- * Build configuration for a static export deployed to Cloudflare Pages.
+ * Build configuration for a static export deployed to Cloudflare Workers assets.
  *
  * `output: 'export'` writes a plain HTML/CSS/JS tree to out/ with no Node
  * server behind it. That rules out several Next features, and the ones this
@@ -10,14 +11,14 @@ import { PHASE_PRODUCTION_BUILD } from 'next/constants';
  *
  *  - Response headers, including the Content-Security-Policy, now live in
  *    public/_headers. next.config's headers() is never called by an export.
- *  - Redirects live in public/_redirects for the same reason.
+ *  - Legacy redirects live in public/_redirects; URL normalization is in the Worker.
  *
- * Both files are served by Cloudflare Pages itself. Changing a security header
+ * Both files are read by Cloudflare Workers assets. Changing a security header
  * means editing public/_headers, not this file.
  */
 
 /**
- * Refuses to produce a production build without a canonical origin.
+ * Refuses a build whose legacy origin setting conflicts with the public site.
  *
  * Canonical URLs, the sitemap and structured data are all generated from it at
  * build time. The default is the production domain, so a plain `npm run build`
@@ -25,25 +26,7 @@ import { PHASE_PRODUCTION_BUILD } from 'next/constants';
  * against someone overriding it with a malformed value.
  */
 function assertSiteUrl() {
-  // Static-generation workers load this file again; report once per build.
-  if (process.env.__SITE_URL_CHECKED === 'true') return;
-  process.env.__SITE_URL_CHECKED = 'true';
-
-  const url = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (!url) return;
-
-  try {
-    new URL(url);
-  } catch {
-    throw new Error(`NEXT_PUBLIC_SITE_URL is not a valid absolute URL: "${url}"`);
-  }
-
-  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(url)) {
-    console.warn(
-      `Building with NEXT_PUBLIC_SITE_URL=${url}. Correct for local testing; a deployed build ` +
-        'must use the public domain.',
-    );
-  }
+  assertProductionOrigin(process.env.NEXT_PUBLIC_SITE_URL);
 }
 
 export default function nextConfig(phase: string): NextConfig {
@@ -56,7 +39,7 @@ export default function nextConfig(phase: string): NextConfig {
     // No Next image optimiser exists in an export; images are served as-is.
     images: { unoptimized: true },
     // /length and /length/ would otherwise both resolve. Keep a single form.
-    // public/_redirects strips the trailing slash so only one URL is canonical.
+    // Workers normalizes known HTML routes with permanent redirects.
     trailingSlash: false,
     experimental: {
       optimizePackageImports: ['geist'],

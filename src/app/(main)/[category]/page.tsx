@@ -13,6 +13,7 @@ import {
   requireUnit,
 } from '@/domain/units/registry';
 import { pairLabel } from '@/lib/seo/labels';
+import { getConversionGuidance } from '@/lib/seo/conversion-guidance';
 import { buildCategoryMetadata, buildCollectionMetadata } from '@/lib/seo/metadata';
 import type { ConversionPair } from '@/types/conversion';
 import type { UnitDefinition } from '@/types/units';
@@ -21,6 +22,7 @@ import { OnThisPage } from '@/components/content/OnThisPage';
 import { AlsoAvailableIn } from '@/components/i18n/AlsoAvailableIn';
 import { PairDirectory } from '@/components/content/PairDirectory';
 import { UnitReference } from '@/components/content/UnitReference';
+import { ConversionSources } from '@/components/content/ConversionSources';
 import { Converter } from '@/components/converter/Converter';
 import { Breadcrumbs } from '@/components/navigation/Breadcrumbs';
 import { CategoryIcon } from '@/components/ui/icons';
@@ -139,6 +141,10 @@ export default async function CategoryPage({ params }: PageProps) {
         .filter((category): category is NonNullable<typeof category> => Boolean(category));
 
   const relatedTitle = resolved.isCollection ? 'Full category' : 'Related categories';
+  const guidance = getConversionGuidance(
+    requireUnit(resolved.defaultPair[0]),
+    requireUnit(resolved.defaultPair[1]),
+  );
 
   const sections = [
     { id: 'about', label: 'About' },
@@ -185,7 +191,11 @@ export default async function CategoryPage({ params }: PageProps) {
             <Section id="about" title={`About ${resolved.name.toLowerCase()} units`}>
               <Prose>
                 <p>{resolved.description}</p>
+                {guidance.guidance.map((note) => (
+                  <p key={note}>{note}</p>
+                ))}
               </Prose>
+              <ConversionSources sources={guidance.sources} />
             </Section>
 
             {popular.length > 0 ? (
@@ -212,7 +222,7 @@ export default async function CategoryPage({ params }: PageProps) {
             <Section
               id="units"
               title="All units"
-              description="Every unit in this category with its exact definition."
+              description="Compare unit values in the base unit. Numbers are rounded to 8 significant digits; conventions and assumptions appear beside the units."
             >
               <UnitReference units={resolved.units} />
             </Section>

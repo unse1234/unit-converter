@@ -9,7 +9,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/fix-static-segments.mjs",
     "preview": "npx --yes serve out -l 3100 --no-clipboard",
+    "preview:workers": "npx --yes wrangler@4.151.1 dev --local",
+    "audit:seo": "node scripts/audit-seo.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",

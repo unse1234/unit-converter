@@ -1,6 +1,7 @@
 import { convertUnits, getConversionRatio } from '@/domain/conversion/engine';
 import { formatNumber } from '@/domain/conversion/format';
 import type { UnitDefinition } from '@/types/units';
+import { displayRelation } from './conversion-guidance';
 
 /**
  * Formula generation.
@@ -21,8 +22,11 @@ export function asFraction(value: number, maxDenominator = 16): string | null {
 
   for (let denominator = 2; denominator <= maxDenominator; denominator += 1) {
     const numerator = value * denominator;
-    if (Math.abs(numerator - Math.round(numerator)) < 1e-12) {
-      return `${Math.round(numerator)}/${denominator}`;
+    const rounded = Math.round(numerator);
+    // An absolute epsilon alone mistakes tiny factors (for example eV to J)
+    // for zero. Fractions must preserve the value at relative precision.
+    if (rounded !== 0 && Math.abs(numerator - rounded) <= Math.abs(numerator) * 1e-14) {
+      return `${rounded}/${denominator}`;
     }
   }
   return null;
@@ -87,7 +91,7 @@ export function buildFormula(from: UnitDefinition, to: UnitDefinition): Conversi
       return {
         expression: `${toLabel} = ${numerator} ÷ ${fromLabel}`,
         explanation: `These units run in opposite directions: one measures distance per unit of fuel and the other fuel per unit of distance. Dividing ${numerator} by the ${from.name} figure gives the ${to.name} figure, and dividing it back returns the original — which is why a lower number is better on one scale and worse on the other.`,
-        worked: `${formatNumber(unit.value / sample)} ${toLabel} = ${numerator} ÷ ${sample}`,
+        worked: `${formatNumber(unit.value / sample)} ${toLabel} ${displayRelation(unit.value / sample, 6)} ${numerator} ÷ ${sample}`,
       };
     }
 
@@ -125,7 +129,7 @@ export function buildFormula(from: UnitDefinition, to: UnitDefinition): Conversi
       return {
         expression: `${toLabel} = ${fromLabel} ${sign(shift)} ${constant(shift)}`,
         explanation: `The two scales use degrees of the same size, so converting is only a shift of the zero point by ${constant(shift)}.`,
-        worked: `${formatNumber(20 * scale + shift)} ${toLabel} = 20 ${sign(shift)} ${constant(shift)}`,
+        worked: `${formatNumber(20 * scale + shift)} ${toLabel} ${displayRelation(20 * scale + shift, 6)} 20 ${sign(shift)} ${constant(shift)}`,
       };
     }
 
@@ -134,14 +138,14 @@ export function buildFormula(from: UnitDefinition, to: UnitDefinition): Conversi
       return {
         expression: `${toLabel} = ${fromLabel} × ${multiplier(scale)} ${sign(shift)} ${constant(shift)}`,
         explanation: `Multiplying by ${multiplier(scale)} converts the size of a degree, and the ${sign(shift) === '+' ? 'addition' : 'subtraction'} of ${constant(shift)} lines up the two zero points, which sit at different temperatures.`,
-        worked: `${formatNumber(20 * scale + shift)} ${toLabel} = 20 × ${multiplier(scale)} ${sign(shift)} ${constant(shift)}`,
+        worked: `${formatNumber(20 * scale + shift)} ${toLabel} ${displayRelation(20 * scale + shift, 6)} 20 × ${multiplier(scale)} ${sign(shift)} ${constant(shift)}`,
       };
     }
 
     return {
       expression: `${toLabel} = (${fromLabel} ${sign(inner)} ${constant(inner)}) × ${multiplier(scale)}`,
       explanation: `The ${sign(inner) === '+' ? 'addition' : 'subtraction'} of ${constant(inner)} aligns the two zero points, then multiplying by ${multiplier(scale)} converts the size of a degree.`,
-      worked: `${formatNumber((68 + inner) * scale)} ${toLabel} = (68 ${sign(inner)} ${constant(inner)}) × ${multiplier(scale)}`,
+      worked: `${formatNumber((68 + inner) * scale)} ${toLabel} ${displayRelation((68 + inner) * scale, 6)} (68 ${sign(inner)} ${constant(inner)}) × ${multiplier(scale)}`,
     };
   }
 
@@ -158,13 +162,15 @@ export function buildFormula(from: UnitDefinition, to: UnitDefinition): Conversi
   // Dividing by the target factor is exact whenever that factor is an exact
   // decimal, so "m ÷ 0.3048" beats "m × 3.280839895…" as the stated formula.
   const preferDivision = fromFactor === 1 && toFactor !== 1 && !Number.isInteger(1 / toFactor);
+  const divisor = multiplier(toFactor);
+  const denominator = divisor.includes('/') ? `(${divisor})` : divisor;
 
   const expression = preferDivision
-    ? `${toLabel} = ${fromLabel} ÷ ${multiplier(toFactor)}`
+    ? `${toLabel} = ${fromLabel} ÷ ${denominator}`
     : `${toLabel} = ${fromLabel} × ${multiplier(ratio)}`;
 
   const exactness = preferDivision
-    ? `One ${to.name} is exactly ${multiplier(toFactor)} ${from.pluralName}, so dividing by that figure converts in one step.`
+    ? `One ${to.name} corresponds to ${multiplier(toFactor)} ${from.pluralName}, so divide by that figure. Displayed constants may be rounded; the converter uses the stored factor before rounding the result.`
     : `One ${from.name} is ${multiplier(ratio)} ${to.pluralName}, so a single multiplication converts any value.`;
 
   const example = convertUnits(10, from, to);
@@ -175,8 +181,8 @@ export function buildFormula(from: UnitDefinition, to: UnitDefinition): Conversi
     ...(example.ok
       ? {
           worked: preferDivision
-            ? `${formatNumber(example.value)} ${toLabel} = 10 ÷ ${multiplier(toFactor)}`
-            : `${formatNumber(example.value)} ${toLabel} = 10 × ${multiplier(ratio)}`,
+            ? `${formatNumber(example.value)} ${toLabel} ${displayRelation(example.value, 6)} 10 ÷ ${denominator}`
+            : `${formatNumber(example.value)} ${toLabel} ${displayRelation(example.value, 6)} 10 × ${multiplier(ratio)}`,
         }
       : {}),
   };

@@ -175,6 +175,7 @@ export const massUnits = defineUnits('mass', 'kilogram', [
     system: 'other',
     factor: ATOMIC_MASS_UNIT_IN_KILOGRAMS,
     description: 'One twelfth of the mass of a carbon-12 atom. Also called the dalton.',
-    source: 'CODATA 2018',
+    note: 'Uses the CODATA 2022 atomic mass constant, 1.66053906892 × 10⁻²⁷ kg, with standard uncertainty 0.00000000052 × 10⁻²⁷ kg. This kilogram value is measured, not exact.',
+    source: 'NIST CODATA 2022',
   },
 ]);

@@ -5,6 +5,7 @@ const config = [
   {
     ignores: [
       '.next/**',
+      '.wrangler/**',
       'node_modules/**',
       'out/**',
       'coverage/**',

@@ -155,16 +155,20 @@ initialiser. Providers added later must be allowed explicitly.
 
 ## 16. Canonical origin is required; previews are noindex
 
-**Decision.** Production builds fail without `NEXT_PUBLIC_SITE_URL`. Vercel preview deployments and
-`SITE_NOINDEX=true` serve `noindex` and a disallow-all robots.txt.
+**Decision (updated 2026-10-16).** Canonicals always name `https://unitflip.org`, including local
+previews. `NEXT_PUBLIC_SITE_URL` is optional and a conflicting legacy value fails production builds.
+`SITE_NOINDEX=true` remains an explicit environment setting for previews; it is not a remediation
+for production canonical exclusions. Preview sitemaps contain no indexable URLs.
 
 **Why.** Canonical URLs, the sitemap and structured data are baked in at build time; a guessed origin
 would silently point search engines elsewhere, and a crawlable preview is duplicate content.
 
 ## 17. Uppercase URLs redirect to lowercase
 
-**Decision.** `src/proxy.ts` sends a 308 for any path containing capitals; its matcher only matches
-such paths.
+**Decision (updated 2026-10-16).** Static exports do not execute a Next proxy. The Cloudflare Worker
+normalizes case, encoding, slash and extension variants only after the Assets binding verifies
+that the preferred spelling directly serves HTML. It preserves query state and real invalid-route
+404s. Known aliases use 308; scripts/styles/fonts and utility assets retain direct static serving.
 
 **Why.** SEO_SPEC §17 rules out duplicate URLs for case variations. Case-insensitive file systems can
 otherwise serve the prerendered page under a capitalised URL.

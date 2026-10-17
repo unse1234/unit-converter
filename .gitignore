@@ -12,6 +12,7 @@ blob-report/
 
 # next.js
 .next/
+.wrangler/
 out/
 next-env.d.ts
 *.tsbuildinfo

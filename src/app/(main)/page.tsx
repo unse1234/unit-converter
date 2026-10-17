@@ -61,7 +61,7 @@ export default function HomePage() {
               button, no sign-up, no waiting.
             </p>
             <ul className="text-fg-subtle mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-              <li>Exact, sourced constants</li>
+              <li>Sources and unit assumptions</li>
               <li>Formulas and reference tables</li>
               <li>No sign-up, nothing to install</li>
             </ul>

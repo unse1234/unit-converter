@@ -28,7 +28,10 @@ test.describe('homepage', () => {
       'href',
       /^https?:\/\/[^/]+\/?$/,
     );
-    await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+    const structuredTypes = await page
+      .locator('script[type="application/ld+json"]')
+      .evaluateAll((nodes) => nodes.map((node) => JSON.parse(node.textContent ?? '{}')['@type']));
+    expect(structuredTypes.sort()).toEqual(['Organization', 'WebSite']);
   });
 });
 
@@ -68,13 +71,14 @@ test.describe('category page', () => {
 });
 
 test.describe('conversion page', () => {
-  test('carries the formula, table, questions and breadcrumbs', async ({ page }) => {
+  test('carries the formula, table, references and breadcrumbs', async ({ page }) => {
     await page.goto('/length/meters-to-feet');
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Meters to Feet Converter');
     await expect(page.locator('code', { hasText: 'ft = m ÷ 0.3048' }).first()).toBeVisible();
     await expect(page.getByRole('table')).toContainText('32.808399');
-    await expect(page.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Sources and precision' })).toBeVisible();
+    await expect(page.locator('#sources a[href^="https://www.nist.gov/"]').first()).toBeVisible();
 
     const breadcrumb = page.getByRole('navigation', { name: 'Breadcrumb' });
     await expect(breadcrumb.getByRole('link', { name: 'Length' })).toHaveAttribute(

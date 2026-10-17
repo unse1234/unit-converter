@@ -20,8 +20,10 @@ const rules: Record<string, DomainRule> = {
     message: 'Temperatures below absolute zero (−273.15 °C, −459.67 °F, 0 K) do not exist.',
   },
   'fuel-economy': {
+    minBase: 0,
     disallowZero: true,
-    message: 'Fuel economy cannot be zero: a vehicle that uses no fuel has no finite economy.',
+    message:
+      'Enter a positive fuel economy or consumption value. Zero has no finite reciprocal conversion.',
   },
 };
 

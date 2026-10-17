@@ -1,10 +1,26 @@
 {
   "name": "unit-converter",
+  "main": "src/hosting/worker.ts",
   "compatibility_date": "2026-09-18",
   "workers_dev": false,
   "preview_urls": false,
   "assets": {
     "directory": "./out",
+    "binding": "ASSETS",
+    // Keep scripts, styles, fonts and utility assets on the direct Assets path.
+    "run_worker_first": [
+      "/*",
+      "!/_next/*",
+      "!/icon.svg",
+      "!/apple-icon.png",
+      "!/opengraph-image.png",
+      "!/search-index.json",
+      "!/robots.txt",
+      "!/sitemap.xml",
+      "!/ads.txt",
+      "!/manifest.webmanifest"
+    ],
+    "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page"
   }
 }

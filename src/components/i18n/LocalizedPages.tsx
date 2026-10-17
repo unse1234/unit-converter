@@ -23,6 +23,8 @@ import {
   type TableRow,
 } from '@/i18n/content';
 import { formatLocal } from '@/i18n/format';
+import { LOCALIZED_GUIDANCE, LOCAL_UNIT_SOURCES } from '@/i18n/guidance';
+import { requireLocalizableUnit } from '@/i18n/local-units';
 import { pageTitleAndDescription } from '@/i18n/metadata';
 import {
   LOCALE_CONTENT,
@@ -36,6 +38,7 @@ import {
 } from '@/i18n/pages';
 import type { FaqEntry, LocalCategory, PairSpec } from '@/i18n/types';
 import { getUnit } from '@/domain/units/registry';
+import { getCategoryGuidance, getConversionGuidance } from '@/lib/seo/conversion-guidance';
 import { faqSchema, webPageSchema } from '@/lib/seo/structured-data';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { FaqList } from '@/components/content/FaqList';
@@ -122,6 +125,53 @@ function PageJsonLd({ page }: { page: LocalizedPage }) {
         language: LOCALE_DEFINITIONS[page.locale].hreflang,
       })}
     />
+  );
+}
+
+/** Definitions and assumptions remain visible in the initial HTML. */
+function References({ page }: { page: Exclude<LocalizedPage, { kind: 'home' }> }) {
+  const { locale, category } = page;
+  const copy = LOCALIZED_GUIDANCE[locale];
+  const specs =
+    page.kind === 'category'
+      ? getCategoryPages(locale, category).flatMap((item) =>
+          item.kind === 'pair' ? [item.spec] : [],
+        )
+      : page.kind === 'pair' || page.kind === 'value'
+        ? [page.spec]
+        : [];
+  const ids = specs.flatMap((spec) => [spec.from, spec.to, ...(spec.extraUnits ?? [])]);
+  const sources = new Map(
+    [
+      ...getCategoryGuidance(
+        category === 'tv' ? 'length' : category === 'cooking' ? 'volume' : category,
+      ).sources,
+      ...specs.flatMap(
+        (spec) =>
+          getConversionGuidance(requireLocalizableUnit(spec.from), requireLocalizableUnit(spec.to))
+            .sources,
+      ),
+      ...LOCAL_UNIT_SOURCES.filter((source) => source.units.some((unit) => ids.includes(unit))),
+    ].map((source) => [source.url, source]),
+  );
+
+  return (
+    <Section id="definitions" title={copy.heading}>
+      <Prose>
+        <p>{copy.categories[category]}</p>
+        <p>{copy.precision}</p>
+      </Prose>
+      <h3>{copy.sources}</h3>
+      <ul className="text-fg-secondary space-y-2 text-sm">
+        {[...sources.values()].map((source) => (
+          <li key={source.url}>
+            <a href={source.url} className="text-accent underline-offset-2 hover:underline">
+              {source.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Section>
   );
 }
 
@@ -407,6 +457,8 @@ function PairPage({ page }: { page: PageOf<'pair'> }) {
 
         <Faqs title={text.faqHeading} items={content.faqs} />
 
+        <References page={page} />
+
         {related.length > 0 ? (
           <Section id="related" title={text.relatedHeading}>
             <LinkList items={related} />
@@ -476,10 +528,7 @@ function ValuePage({ page }: { page: PageOf<'value'> }) {
           />
         </Section>
 
-        <Faqs
-          title={text.faqHeading}
-          items={[...text.valueFaqs(ctx), ...(screen ? text.tvFaqs(screen) : [])]}
-        />
+        <References page={page} />
 
         {siblings.length > 0 ? (
           <Section id="values" title={text.valuesHeading(ctx)}>
@@ -551,7 +600,7 @@ function TvPage({ page }: { page: PageOf<'tv'> }) {
           <ScreenTable locale={locale} />
         </Section>
 
-        <Faqs title={text.faqHeading} items={text.tvFaqs(ctx)} />
+        <References page={page} />
 
         {others.length > 0 ? (
           <Section id="related" title={text.relatedHeading}>
@@ -611,6 +660,8 @@ function HeightPage({ page }: { page: PageOf<'height'> }) {
         </Section>
 
         <Faqs title={text.faqHeading} items={spec.faqs} />
+
+        <References page={page} />
 
         <Section id="related" title={text.relatedHeading}>
           <LinkList
@@ -675,6 +726,23 @@ export function LocaleCategoryPage({ page }: { page: PageOf<'category'> }) {
       <AdSlot placement="below-converter" className="mt-6" />
 
       <div className="mt-10 space-y-10">
+        {pairs.length > 0 ? (
+          <Section title={LOCALIZED_GUIDANCE[locale].comparison}>
+            <LinkList
+              items={pairs.map((pair) => {
+                const comparison = valueContext(locale, pair.spec, 1);
+                return {
+                  href: pair.path,
+                  label: pageLabel(pair),
+                  detail: `1 ${comparison.fromSymbol} ${comparison.working.includes('≈') ? '≈' : '='} ${comparison.result} ${comparison.toSymbol}`,
+                };
+              })}
+            />
+          </Section>
+        ) : null}
+
+        <References page={page} />
+
         <Section title={text.categoryPairsHeading(categoryText?.name ?? '')}>
           <LinkList
             items={pages

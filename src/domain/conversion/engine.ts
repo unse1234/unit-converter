@@ -77,7 +77,25 @@ export function convertUnits(
     return fail('OUT_OF_DOMAIN', rule.message);
   }
 
-  // Identical scale and offset: return the input untouched rather than letting
+  let base = toBaseValue(value, from);
+  if (from.category === 'temperature' && base < 0) {
+    // At absolute zero an affine conversion can leave a negative last-bit
+    // residue (−459.67 °F produces about −2.8e−14 K). Bound only the rounding
+    // from the multiplication/addition, rather than allowing a fixed negative
+    // temperature tolerance that would admit small negative kelvin inputs.
+    const roundoff =
+      Number.EPSILON * (Math.abs(value * (from.factor ?? 1)) + Math.abs(from.offset ?? 0));
+    if (base >= -roundoff) base = 0;
+  }
+
+  if (rule?.minBase !== undefined && base < rule.minBase) {
+    return fail('OUT_OF_DOMAIN', rule.message);
+  }
+  if (rule?.disallowZero && base === 0) {
+    return fail('OUT_OF_DOMAIN', rule.message);
+  }
+
+  // Identical scale and offset: return the validated input untouched rather than letting
   // a multiply-then-divide round trip introduce a trailing-digit artefact.
   if (
     from.id === to.id ||
@@ -87,15 +105,6 @@ export function convertUnits(
       (from.offset ?? 0) === (to.offset ?? 0))
   ) {
     return { ok: true, value, from, to };
-  }
-
-  const base = toBaseValue(value, from);
-
-  if (rule?.minBase !== undefined && base < rule.minBase) {
-    return fail('OUT_OF_DOMAIN', rule.message);
-  }
-  if (rule?.disallowZero && base === 0) {
-    return fail('OUT_OF_DOMAIN', rule.message);
   }
 
   const result = fromBaseValue(base, to);

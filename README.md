@@ -8,7 +8,7 @@ Production: **https://unitflip.org**
 
 Built with Next.js (App Router, `output: 'export'`), React, TypeScript and Tailwind CSS. There is no
 backend, no database and no server at runtime: `npm run build` writes a complete static site to
-`out/`, which is deployed to Cloudflare Pages. The converter runs entirely in the browser.
+`out/`, which is deployed to Cloudflare Workers assets. The converter runs entirely in the browser.
 
 The product specifications this implementation follows live in [`unit-converter-spec/`](./unit-converter-spec).
 Decisions that interpret or deviate from them are recorded in [`docs/decisions.md`](./docs/decisions.md).
@@ -50,7 +50,7 @@ requires a redeploy before it takes effect.
 | Variable                  | Default                | Purpose                                                                                                                                            |
 | ------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `NEXT_PUBLIC_GA_ID`       | empty                  | GA4 measurement id (`G-XXXXXXXXXX`). Empty means no Google script, no cookie and no request. Set it and `<GoogleAnalytics>` renders in the layout. |
-| `NEXT_PUBLIC_SITE_URL`    | `https://unitflip.org` | Canonical origin, no trailing slash. Canonical URLs, the sitemap, robots.txt and structured data are built from it.                                |
+| `NEXT_PUBLIC_SITE_URL`    | `https://unitflip.org` | Optional legacy setting; a production build rejects any conflicting origin. Local previews also declare production canonicals.                     |
 | `SITE_NOINDEX`            | `false`                | `true` serves `noindex` and a disallow-all robots.txt. Use on any preview or staging deployment.                                                   |
 | `NEXT_PUBLIC_ADS_ENABLED` | `false`                | `true` renders ad slots. See [Monetization](#analytics-and-monetization).                                                                          |
 
@@ -104,7 +104,7 @@ src/
   styles/globals.css      Design tokens and base styles
 public/
   _headers                Cloudflare response headers, including the CSP
-  _redirects              Cloudflare redirects: www, old URLs, trailing slashes
+  _redirects              Legacy privacy redirect; HTML normalization is in src/hosting/worker.ts
   ads.txt                 AdSense placeholder — add your publisher line after approval
   opengraph-image.png     Social sharing image (see docs/social-image.md)
   apple-icon.png          iOS home-screen icon
@@ -142,15 +142,16 @@ part of `npm test`.
   category, except pairs whose factors differ by more than 10¹² and pairs listed in
   `EXCLUDED_PAIRS` (`src/domain/conversion/pairs.ts`). Other units work in the converter and appear
   on their category page but get no page of their own, which avoids thin, near-duplicate URLs.
-- One template, `src/app/[category]/[conversion]/page.tsx`, renders every pair via
+- One template, `src/app/(main)/[category]/[conversion]/page.tsx`, renders every English pair via
   `generateStaticParams`. Nothing is written per conversion.
 - Page content is computed from the data (`src/lib/seo/conversion-content.ts`, `formula.ts`): the
   exact relationship or formula, a worked example, a table sized to the category, questions the
   data can answer truthfully, and unit notes. Titles and descriptions come from
   `src/lib/seo/metadata.ts`.
 - Every page's canonical URL is its clean path. Query parameters (`?value=10`) prefill the converter
-  but never create another indexable URL, and trailing slashes redirect to the slashless form via
-  `public/_redirects`.
+  but do not create separate editorial landing pages. Published localized fixed-value pages keep
+  their own paths. `src/hosting/worker.ts` permanently redirects proven HTML equivalents (case,
+  slashes, extensions, encoding and the legacy privacy URL), preserving query parameters.
 - The sitemap and robots.txt are generated from the same data, so they cannot list a page that does
   not exist.
 - Structured data is limited to what the pages genuinely contain: `BreadcrumbList` on every page
@@ -159,6 +160,23 @@ part of `npm test`.
   homepage.
 - Cooking and Typography are _collections_: landing pages over Volume and Length units whose links
   point at the canonical pages in those categories, so no conversion has two URLs.
+
+### SEO verification
+
+Canonicals always use `https://unitflip.org`, including local builds. Leave `NEXT_PUBLIC_SITE_URL`
+unset or set it to that origin; a different value fails the production build. Sitemap `lastmod`
+is omitted until trustworthy page modification dates exist.
+
+The build's `postbuild` step repairs Windows-generated router payload filenames to match the
+dotted URLs requested by Next's client. It preserves existing payloads and is a no-op for correct
+Linux exports. HTML and organic route inventory are unchanged. Run its fixtures and the audit
+regressions with `node --test scripts/fix-static-segments.test.mjs scripts/audit-seo.test.mjs`.
+
+After `npm run build`, use `npm run preview:workers -- --ip 127.0.0.1 --port 3100` for the same
+routing and header behavior as production. `npm run audit:seo -- --base http://127.0.0.1:3100
+--output docs/seo-audit-after.json` checks every exported route and sitemap entry. Without `--base`,
+the audit inspects files and explicitly leaves HTTP status/header evidence unavailable. See
+`docs/seo-remediation-report.md` for findings, limitations and Search Console follow-up.
 
 ## Languages
 
@@ -215,23 +233,26 @@ directions) to `EXCLUDED_PAIRS` in `src/domain/conversion/pairs.ts`. No componen
 - Enabling another ad vendor means adding its origins to the Content-Security-Policy in
   `public/_headers` and updating `/privacy-policy` in the same change.
 
-## Deployment — Cloudflare Pages
+## Deployment — Cloudflare Workers assets
 
-The build produces a complete static site in `out/`. Nothing renders per request.
+The build produces static HTML in `out/`. A small Worker normalizes proven equivalent HTML URLs;
+page rendering remains static. Deploy `wrangler.jsonc`, `src/hosting/worker.ts` and `out/` together
+using the existing Workers pipeline.
 
-| Setting          | Value                        |
-| ---------------- | ---------------------------- |
-| Framework preset | Next.js (Static HTML Export) |
-| Build command    | `npm run build`              |
-| Output directory | `out`                        |
-| Node version     | 20.9 or later                |
+| Setting          | Value            |
+| ---------------- | ---------------- |
+| Build command    | `npm run build`  |
+| Output directory | `out`            |
+| Worker config    | `wrangler.jsonc` |
+| Node version     | 20.9 or later    |
 
-Because there is no server, two Next features are replaced by Cloudflare's own files:
+Next's static export does not execute its response-header or redirect APIs:
 
 - **Response headers**, including the Content-Security-Policy, live in `public/_headers`.
   `next.config.ts`'s `headers()` is never called by an export.
-- **Redirects** live in `public/_redirects`, covering the `www` host, the old `/privacy` URL and
-  trailing slashes.
+- **HTML normalization** lives in `src/hosting/worker.ts`, with the legacy privacy redirect also
+  in `public/_redirects`. Host redirects require the relevant DNS/custom-domain route to reach
+  Cloudflare. Scripts, styles, fonts and utility assets bypass the Worker through selective routing.
 
 Both are copied verbatim into `out/`. Changing a security header means editing `public/_headers`.
 

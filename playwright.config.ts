@@ -2,13 +2,11 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * End-to-end tests run against the static export (`npm run build` first),
- * served as plain files — which is exactly what Cloudflare Pages serves.
+ * served through the same Workers runtime and configuration as production.
  * Development mode has different rendering, no minification and extra
  * warnings, and `next start` does not work with `output: 'export'` at all.
  *
- * `serve` is used rather than a Next server so the tests exercise the real
- * artefact, including the extensionless-versus-.html resolution that a static
- * host performs.
+ * Wrangler exercises response headers, redirects and real 404 responses too.
  *
  * Port 3100 keeps the test server clear of a dev server on 3000.
  */
@@ -36,9 +34,7 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    // `serve` maps /length to out/length.html and /404.html to unmatched
-    // paths, the same way Cloudflare Pages does.
-    command: `npx --yes serve out -l ${PORT} --no-clipboard`,
+    command: `npm run preview:workers -- --ip 127.0.0.1 --port ${PORT}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

@@ -19,6 +19,7 @@ import { buildConversionMetadata, conversionPageTitle } from '@/lib/seo/metadata
 import { faqSchema } from '@/lib/seo/structured-data';
 import { AdSlot } from '@/components/ads/AdSlot';
 import { ConversionTable } from '@/components/content/ConversionTable';
+import { ConversionSources } from '@/components/content/ConversionSources';
 import { FaqList } from '@/components/content/FaqList';
 import { OnThisPage } from '@/components/content/OnThisPage';
 import { AlsoAvailableIn } from '@/components/i18n/AlsoAvailableIn';
@@ -87,6 +88,7 @@ export default async function ConversionPage({ params }: PageProps) {
     { id: 'table', label: 'Conversion table' },
     ...(content.faqs.length > 0 ? [{ id: 'questions', label: 'Questions' }] : []),
     { id: 'units', label: 'About the units' },
+    { id: 'sources', label: 'Sources and precision' },
     ...(related.length > 0 ? [{ id: 'related', label: 'Related conversions' }] : []),
   ];
 
@@ -181,11 +183,18 @@ export default async function ConversionPage({ params }: PageProps) {
                       </p>
                     ) : null}
                     {unit.source ? (
-                      <p className="text-fg-subtle mt-2 text-xs">Defined by {unit.source}.</p>
+                      <p className="text-fg-subtle mt-2 text-xs">Reference: {unit.source}.</p>
                     ) : null}
                   </Card>
                 ))}
               </div>
+            </Section>
+
+            <Section id="sources" title="Sources and precision">
+              <Prose>
+                <p>{content.precisionNote}</p>
+              </Prose>
+              <ConversionSources sources={content.sources} />
             </Section>
 
             {related.length > 0 ? (

@@ -16,7 +16,7 @@ export const categories: CategoryDefinition[] = [
     title: 'Length & Distance',
     summary: 'Convert metres, feet, inches, kilometres, miles and 18 other length units.',
     description:
-      'Length is measured in metres in the SI system and in inches, feet, yards and miles in the imperial and US customary systems. Since 1959 the two systems have been linked by exact definitions: one inch is exactly 2.54 centimetres, which makes every conversion on this page exact rather than approximate.',
+      'Length is measured in metres in SI and in inches, feet, yards and miles in the imperial and US customary systems. One international inch is exactly 2.54 centimetres. The converter also includes astronomical distances and explicitly defined typography reference units.',
     baseUnit: 'meter',
     quantity: 'length (L)',
     related: ['area', 'volume', 'speed'],
@@ -46,7 +46,7 @@ export const categories: CategoryDefinition[] = [
     title: 'Temperature',
     summary: 'Convert Celsius, Fahrenheit, Kelvin, Rankine and Réaumur.',
     description:
-      'Temperature scales are unusual: they have different zero points as well as different step sizes, so converting between them needs both a multiplication and an addition. Multiplying by a single factor — the way you would for length or mass — gives the wrong answer for every value except zero kelvin.',
+      'A temperature conversion can change both the scale and the zero point. Celsius to Fahrenheit needs a scale factor and an offset; Celsius to Kelvin needs only an offset, while Kelvin to Rankine needs only a scale factor. The converter rejects readings below absolute zero.',
     baseUnit: 'kelvin',
     quantity: 'thermodynamic temperature (Θ)',
     related: ['energy', 'pressure'],
@@ -136,7 +136,7 @@ export const categories: CategoryDefinition[] = [
     title: 'Energy & Work',
     summary: 'Convert joules, calories, kilowatt-hours, BTU and electronvolts.',
     description:
-      'Energy is measured in joules in SI, but nutrition uses calories, electricity billing uses kilowatt-hours, heating uses BTU and particle physics uses electronvolts. All of them are exactly convertible. Note that the Calorie on a food label is a kilocalorie: 1,000 of the small calories used in chemistry.',
+      'Energy is measured in joules in SI. Nutrition uses kilocalories, electricity billing uses kilowatt-hours, heating uses BTU and particle physics uses electronvolts. Select the definition specified in the source: calorie and therm variants do not all have the same value.',
     baseUnit: 'joule',
     quantity: 'energy (M·L²·T⁻²)',
     related: ['power', 'temperature', 'force'],
@@ -181,7 +181,7 @@ export const categories: CategoryDefinition[] = [
     title: 'Data Transfer Rate',
     summary: 'Convert Mbps, MB/s, Gbps and other bandwidth units.',
     description:
-      'Internet plans are sold in megabits per second while download managers report megabytes per second. One byte is eight bits, so a 100 Mbps connection tops out around 12.5 MB/s. That factor of eight explains most of the gap between an advertised speed and the number on a progress bar.',
+      'Internet rates may be stated in megabits per second while file transfers are reported in megabytes per second. The same nominal 100 Mbps rate equals 12.5 MB/s before overhead. This converter changes the units of a rate; it does not predict network performance.',
     baseUnit: 'bit-per-second',
     quantity: 'information rate',
     related: ['digital-storage', 'time'],
@@ -406,7 +406,7 @@ export const categories: CategoryDefinition[] = [
     title: 'Electrical Conductance',
     summary: 'Convert siemens, millisiemens and microsiemens.',
     description:
-      'Conductance is the reciprocal of resistance: a component with 2 Ω of resistance has 0.5 S of conductance. Water quality is the most common everyday use, where conductivity is reported in microsiemens per centimetre.',
+      'Conductance is the reciprocal of resistance: a component with 2 Ω of resistance has 0.5 S of conductance. This category converts siemens and its prefixes, rather than the related material property conductivity.',
     baseUnit: 'siemens',
     quantity: 'conductance (M⁻¹·L⁻²·T³·I²)',
     related: ['resistance', 'electric-current'],
@@ -436,7 +436,7 @@ export const categories: CategoryDefinition[] = [
     title: 'Illuminance',
     summary: 'Convert lux, foot-candles and phot.',
     description:
-      'Illuminance is how much light falls on a surface. One lux is one lumen per square metre; one foot-candle is one lumen per square foot, about 10.76 lux. Office lighting is typically designed for 300–500 lux.',
+      'Illuminance is how much light falls on a surface. One lux is one lumen per square metre; one foot-candle is one lumen per square foot, about 10.76 lux. These units describe the light received by a surface, rather than the output of a lamp.',
     baseUnit: 'lux',
     quantity: 'illuminance (J·L⁻²)',
     related: ['luminous-flux', 'luminous-intensity'],
@@ -511,7 +511,7 @@ export const categories: CategoryDefinition[] = [
     title: 'Equivalent Radiation Dose',
     summary: 'Convert sieverts, millisieverts, microsieverts and rem.',
     description:
-      'Equivalent dose weights absorbed dose by how damaging the radiation type is to tissue, and is measured in sieverts. The older unit, the rem, is exactly 0.01 Sv. A chest X-ray is roughly 0.1 mSv and natural background exposure is a few millisieverts per year.',
+      'Equivalent dose applies radiation weighting factors to absorbed dose and is measured in sieverts. The older unit, the rem, is exactly 0.01 Sv. Equivalent dose and effective dose use sieverts but describe different quantities; preserve the quantity stated in the source measurement.',
     baseUnit: 'sievert',
     quantity: 'equivalent dose (L²·T⁻²)',
     related: ['radiation-absorbed-dose', 'radioactivity'],

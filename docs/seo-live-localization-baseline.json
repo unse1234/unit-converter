@@ -1,0 +1,190 @@
+{
+  "observedDate": "2026-10-16",
+  "maxConcurrency": 2,
+  "pages": [
+    {
+      "path": "/es/longitud/pulgadas-a-cm",
+      "status": 200,
+      "finalUrl": "https://unitflip.org/es/longitud/pulgadas-a-cm",
+      "responseRobots": null,
+      "canonicals": [
+        "https://unitflip.org/es/longitud/pulgadas-a-cm"
+      ],
+      "hreflang": {
+        "en": "https://unitflip.org/length/inches-to-centimeters",
+        "es": "https://unitflip.org/es/longitud/pulgadas-a-cm",
+        "pt": "https://unitflip.org/pt/comprimento/polegadas-em-cm",
+        "it": "https://unitflip.org/it/lunghezza/pollici-in-cm",
+        "fr": "https://unitflip.org/fr/longueur/pouces-en-cm",
+        "id": "https://unitflip.org/id/panjang/inch-ke-cm",
+        "x-default": "https://unitflip.org/length/inches-to-centimeters"
+      },
+      "language": "es",
+      "title": [
+        "Pulgadas a cm: convertidor y tabla (1 in = 2.54 cm) | UnitFlip"
+      ],
+      "description": "Convierte pulgadas a centímetros al instante. 1 pulgada = 2.54 cm. Incluye tabla de 1 a 100 pulgadas, fórmula y medidas de pantallas de TV.",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "h1": [
+        "Convertidor de pulgadas a cm"
+      ],
+      "initialHtmlLength": 106563
+    },
+    {
+      "path": "/pt/comprimento/cm-em-polegadas",
+      "status": 200,
+      "finalUrl": "https://unitflip.org/pt/comprimento/cm-em-polegadas",
+      "responseRobots": null,
+      "canonicals": [
+        "https://unitflip.org/pt/comprimento/cm-em-polegadas"
+      ],
+      "hreflang": {
+        "en": "https://unitflip.org/length/centimeters-to-inches",
+        "es": "https://unitflip.org/es/longitud/cm-a-pulgadas",
+        "pt": "https://unitflip.org/pt/comprimento/cm-em-polegadas",
+        "it": "https://unitflip.org/it/lunghezza/cm-in-pollici",
+        "fr": "https://unitflip.org/fr/longueur/cm-en-pouces",
+        "id": "https://unitflip.org/id/panjang/cm-ke-inci",
+        "x-default": "https://unitflip.org/length/centimeters-to-inches"
+      },
+      "language": "pt",
+      "title": [
+        "Cm em polegadas: conversor e tabela (1 cm = 0,39370079 pol) | UnitFlip"
+      ],
+      "description": "Converta centímetros em polegadas na hora: 1 cm = 0,39370079 pol. Com fórmula, exemplos e tabela de conversão.",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "h1": [
+        "Conversor de cm em polegadas"
+      ],
+      "initialHtmlLength": 79300
+    },
+    {
+      "path": "/it/lunghezza/55-pollici-in-cm",
+      "status": 200,
+      "finalUrl": "https://unitflip.org/it/lunghezza/55-pollici-in-cm",
+      "responseRobots": null,
+      "canonicals": [
+        "https://unitflip.org/it/lunghezza/55-pollici-in-cm"
+      ],
+      "hreflang": {
+        "pt": "https://unitflip.org/pt/tv/tamanho-tv-55-polegadas-em-cm",
+        "it": "https://unitflip.org/it/lunghezza/55-pollici-in-cm",
+        "fr": "https://unitflip.org/fr/longueur/55-pouces-en-cm"
+      },
+      "language": "it",
+      "title": [
+        "55 pollici in cm: diagonale, larghezza e altezza TV | UnitFlip"
+      ],
+      "description": "55 pollici = 139,7 cm di diagonale. Un TV 16:9 da 55\" misura circa 121,8 × 68,5 cm di schermo. Tabella da 32 a 85 pollici.",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "h1": [
+        "55 pollici in cm"
+      ],
+      "initialHtmlLength": 90822
+    },
+    {
+      "path": "/fr/cuisine/cup-en-ml",
+      "status": 200,
+      "finalUrl": "https://unitflip.org/fr/cuisine/cup-en-ml",
+      "responseRobots": null,
+      "canonicals": [
+        "https://unitflip.org/fr/cuisine/cup-en-ml"
+      ],
+      "hreflang": {
+        "en": "https://unitflip.org/volume/us-cups-to-milliliters",
+        "es": "https://unitflip.org/es/cocina/tazas-a-ml",
+        "fr": "https://unitflip.org/fr/cuisine/cup-en-ml",
+        "x-default": "https://unitflip.org/volume/us-cups-to-milliliters"
+      },
+      "language": "fr",
+      "title": [
+        "Cup en ml : conversions pour la pâtisserie (1 cup = 236,6 ml) | UnitFlip"
+      ],
+      "description": "1 cup américaine = 236,6 ml. Convertissez 1, 1/2 et 1/4 cup en ml, avec la cup métrique de 250 ml.",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "h1": [
+        "Convertir des cups en ml"
+      ],
+      "initialHtmlLength": 68285
+    },
+    {
+      "path": "/id/berat/ons-ke-gram",
+      "status": 200,
+      "finalUrl": "https://unitflip.org/id/berat/ons-ke-gram",
+      "responseRobots": null,
+      "canonicals": [
+        "https://unitflip.org/id/berat/ons-ke-gram"
+      ],
+      "hreflang": {},
+      "language": "id",
+      "title": [
+        "1 Ons Berapa Gram? 100 g (Ons Indonesia) vs 28,35 g | UnitFlip"
+      ],
+      "description": "Di Indonesia 1 ons = 100 gram. Ounce internasional = 28,35 g dan troy ons emas = 31,1 g. Lengkap dengan tabel.",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "h1": [
+        "1 ons berapa gram? Konversi ons ke gram"
+      ],
+      "initialHtmlLength": 79925
+    },
+    {
+      "path": "/pt/area/alqueire-em-hectare",
+      "status": 200,
+      "finalUrl": "https://unitflip.org/pt/area/alqueire-em-hectare",
+      "responseRobots": null,
+      "canonicals": [
+        "https://unitflip.org/pt/area/alqueire-em-hectare"
+      ],
+      "hreflang": {},
+      "language": "pt",
+      "title": [
+        "Alqueire em hectare e m²: paulista, mineiro e baiano | UnitFlip"
+      ],
+      "description": "Alqueire paulista = 2,42 ha, mineiro = 4,84 ha, baiano = 9,68 ha. Converta por estado para hectares e metros quadrados.",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "h1": [
+        "Conversor de alqueire em hectare"
+      ],
+      "initialHtmlLength": 73859
+    },
+    {
+      "path": "/es/longitud/6-pulgadas-a-cm",
+      "status": 200,
+      "finalUrl": "https://unitflip.org/es/longitud/6-pulgadas-a-cm",
+      "responseRobots": null,
+      "canonicals": [
+        "https://unitflip.org/es/longitud/6-pulgadas-a-cm"
+      ],
+      "hreflang": {
+        "es": "https://unitflip.org/es/longitud/6-pulgadas-a-cm",
+        "pt": "https://unitflip.org/pt/comprimento/6-polegadas-em-cm",
+        "it": "https://unitflip.org/it/lunghezza/6-pollici-in-cm",
+        "fr": "https://unitflip.org/fr/longueur/6-pouces-en-cm",
+        "id": "https://unitflip.org/id/panjang/6-inch-berapa-cm"
+      },
+      "language": "es",
+      "title": [
+        "6 pulgadas a cm: 6 in = 15.24 cm | UnitFlip"
+      ],
+      "description": "6 pulgadas equivalen a 15.24 centímetros. Ve el cálculo paso a paso y convierte otras medidas en pulgadas.",
+      "robots": "index, follow",
+      "googlebot": "index, follow",
+      "h1": [
+        "6 pulgadas a cm"
+      ],
+      "initialHtmlLength": 73929
+    },
+    {
+      "path": "/id/this-route-is-invalid",
+      "status": 404,
+      "finalUrl": "https://unitflip.org/id/this-route-is-invalid",
+      "error": "HTTP Error 404: Not Found"
+    }
+  ]
+}

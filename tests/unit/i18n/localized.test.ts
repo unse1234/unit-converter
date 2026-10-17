@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { LOCALES, type SiteLanguage } from '@/i18n/config';
+import { LOCALES, LOCALE_DEFINITIONS, type SiteLanguage } from '@/i18n/config';
 import { buildPairContent, screenContext, valueContext } from '@/i18n/content';
 import { buildLocalFormula, formatLocal } from '@/i18n/format';
 import { requireLocalizableUnit } from '@/i18n/local-units';
+import { parseLocalizedNumericInput } from '@/i18n/parse';
 import { localizedPageMetadata, pageTitleAndDescription } from '@/i18n/metadata';
 import {
   LOCALE_CONTENT,
@@ -59,6 +60,28 @@ describe('localized page registry', () => {
         }
       }
     }
+  });
+
+  it('uses each translated URL as its canonical, with valid self-referencing hreflang', () => {
+    for (const page of pages) {
+      const metadata = localizedPageMetadata(page);
+      expect(metadata.alternates?.canonical).toBe(`https://unitflip.org${page.path}`);
+      const languages = metadata.alternates?.languages as Record<string, string> | undefined;
+      if (languages) {
+        expect(languages[LOCALE_DEFINITIONS[page.locale].hreflang]).toBe(
+          `https://unitflip.org${page.path}`,
+        );
+        for (const code of Object.keys(languages))
+          expect(code).toMatch(/^(en|es|pt|it|fr|id|x-default)$/);
+      }
+    }
+  });
+
+  it('does not fabricate English equivalents or Open Graph translations for local units', () => {
+    const page = getLocalizedPage('/id/berat/ons-ke-gram')!;
+    expect(getPageAlternates(page)).toEqual({ id: page.path });
+    expect(localizedPageMetadata(page).alternates?.languages).toBeUndefined();
+    expect(localizedPageMetadata(page).openGraph).toMatchObject({ alternateLocale: [] });
   });
 
   it('links the English inch page to all five translations, English as x-default', () => {
@@ -140,6 +163,17 @@ describe('localized numbers', () => {
     expect(buildLocalFormula(c, f, 'fr', '°C', '°F')?.expression).toBe('°F = °C × 9/5 + 32');
   });
 
+  it('avoids calling a rounded kilogram-to-pound multiplier exact', () => {
+    const kg = requireLocalizableUnit('kilogram');
+    const lb = requireLocalizableUnit('pound');
+    const formula = buildLocalFormula(kg, lb, 'pt', 'kg', 'lb');
+    expect(formula?.expression).toBe('lb = kg ÷ 0,45359237');
+    expect(formula?.working(1)).toBe('1 ÷ 0,45359237 ≈ 2,205');
+    const inch = requireLocalizableUnit('inch');
+    const cm = requireLocalizableUnit('centimeter');
+    expect(buildLocalFormula(inch, cm, 'es', 'in', 'cm')?.working(6)).toBe('6 × 2.54 = 15.24');
+  });
+
   it('computes the local units from their definitions', () => {
     const es = LOCALE_CONTENT.id.pairs.find((pair) => pair.slug === 'ons-ke-gram')!;
     expect(valueContext('id', es, 5).result).toBe('500');
@@ -160,5 +194,25 @@ describe('localized numbers', () => {
       height: '68,5',
     });
     expect(screenContext('fr', 65)).toMatchObject({ diagonal: '165,1', width: '143,9' });
+  });
+});
+
+describe('localized input parsing', () => {
+  it('interprets a three-place decimal comma according to the page language', () => {
+    for (const locale of ['pt-BR', 'it-IT', 'fr-FR', 'id-ID']) {
+      expect(parseLocalizedNumericInput('1,234', locale)).toEqual({ ok: true, value: 1.234 });
+    }
+    expect(parseLocalizedNumericInput('1,234', 'es-MX')).toEqual({ ok: true, value: 1234 });
+  });
+
+  it('accepts grouped values, fractions and scientific notation without merging malformed groups', () => {
+    expect(parseLocalizedNumericInput('1.234,5', 'pt-BR')).toEqual({ ok: true, value: 1234.5 });
+    expect(parseLocalizedNumericInput('1 234,5', 'fr-FR')).toEqual({ ok: true, value: 1234.5 });
+    expect(parseLocalizedNumericInput('1,234.5', 'es-MX')).toEqual({ ok: true, value: 1234.5 });
+    expect(parseLocalizedNumericInput('1 1/2', 'pt-BR')).toEqual({ ok: true, value: 1.5 });
+    expect(parseLocalizedNumericInput('2,5e3', 'it-IT')).toEqual({ ok: true, value: 2500 });
+    expect(parseLocalizedNumericInput('2.54', 'pt-BR')).toEqual({ ok: true, value: 2.54 });
+    expect(parseLocalizedNumericInput('1.23.456,7', 'pt-BR').ok).toBe(false);
+    expect(parseLocalizedNumericInput('10 20', 'fr-FR').ok).toBe(false);
   });
 });

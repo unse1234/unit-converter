@@ -24,6 +24,22 @@ describe('asFraction', () => {
   it('returns null for integers and for values with no simple fraction', () => {
     expect(asFraction(3)).toBeNull();
     expect(asFraction(3.280839895013123)).toBeNull();
+    expect(asFraction(1.602176634e-19)).toBeNull();
+    expect(asFraction(1e-12)).toBeNull();
+  });
+});
+
+describe('worked-example display precision', () => {
+  it('marks a rounded answer as approximate', () => {
+    expect(buildFormula(requireUnit('meter'), requireUnit('foot'))?.worked).toBe(
+      '32.8084 ft ≈ 10 ÷ 0.3048',
+    );
+  });
+
+  it('keeps equality when the displayed answer is exact', () => {
+    expect(buildFormula(requireUnit('foot'), requireUnit('meter'))?.worked).toBe(
+      '3.048 m = 10 × 0.3048',
+    );
   });
 });
 
@@ -63,6 +79,10 @@ describe('proportional formulas', () => {
   it('states the relationship for cross-system mass units', () => {
     expect(expression('kilogram', 'pound')).toBe('lb = kg ÷ 0.45359237');
   });
+
+  it('groups a fractional denominator so the displayed arithmetic preserves precedence', () => {
+    expect(expression('coulomb', 'milliampere-hour')).toBe('mAh = C ÷ (18/5)');
+  });
 });
 
 describe('fuel economy formulas are reciprocal', () => {
@@ -86,10 +106,10 @@ describe('fuel economy formulas are reciprocal', () => {
 });
 
 describe('generated page content', () => {
-  it('states the exact relationship in both directions', () => {
+  it('distinguishes rounded relationships from exact displayed values', () => {
     const meters = content('meter', 'foot');
     // Trailing zeros are stripped, so the exact 0.3048 shows as-is.
-    expect(meters.statement).toBe('1 meter = 3.2808399 feet');
+    expect(meters.statement).toBe('1 meter ≈ 3.2808399 feet');
     expect(meters.reverseStatement).toBe('1 foot = 0.3048 meters');
   });
 
@@ -104,15 +124,9 @@ describe('generated page content', () => {
     expect(celsius.table.find((row) => row.from === 100)?.toLabel).toBe('212');
   });
 
-  it('only asks questions it can answer', () => {
+  it('does not repeat the formula and table as artificial FAQs', () => {
     const meters = content('meter', 'foot');
-    expect(meters.faqs.length).toBeGreaterThanOrEqual(3);
-    for (const faq of meters.faqs) {
-      expect(faq.question.length).toBeGreaterThan(10);
-      expect(faq.answer.length).toBeGreaterThan(10);
-      expect(faq.answer).not.toContain('undefined');
-      expect(faq.answer).not.toContain('NaN');
-    }
+    expect(meters.faqs).toEqual([]);
   });
 
   it('carries unit disclosures as notes rather than invented questions', () => {
@@ -129,7 +143,7 @@ describe('generated page content', () => {
     const a = content('meter', 'foot');
     const b = content('kilometer', 'mile');
     expect(a.statement).not.toBe(b.statement);
-    expect(a.intro).not.toBe(b.intro);
+    expect(a.table).not.toEqual(b.table);
     expect(a.formula?.expression).not.toBe(b.formula?.expression);
   });
 
@@ -160,13 +174,9 @@ describe('temperature page content', () => {
     expect(celsius.faqs.some((faq) => /how many/i.test(faq.question))).toBe(false);
   });
 
-  it('answers with reference temperatures', () => {
-    const freezing = celsius.faqs.find((faq) => faq.question === 'What is 0 °C in Fahrenheit?');
-    expect(freezing?.answer).toBe(
-      '0 degrees Celsius = 32 degrees Fahrenheit, the freezing point of water.',
-    );
-    const body = celsius.faqs.find((faq) => faq.question === 'What is 37 °C in Fahrenheit?');
-    expect(body?.answer).toContain('98.6 degrees Fahrenheit');
+  it('keeps useful reference temperatures in the table', () => {
+    expect(celsius.table.find((row) => row.from === 0)?.toLabel).toBe('32');
+    expect(celsius.table.find((row) => row.from === 37)?.toLabel).toBe('98.6');
   });
 
   it('explains that a degree is a different size on each scale', () => {
@@ -181,10 +191,8 @@ describe('temperature page content', () => {
     expect(size?.answer).toMatch(/^Yes\./);
   });
 
-  it('gives water reference points in the introduction', () => {
-    expect(content('fahrenheit', 'kelvin').intro).toContain(
-      'Water freezes at 32 °F (273.15 K) and boils at 212 °F (373.15 K)',
-    );
+  it('explains the distinction between readings and temperature differences', () => {
+    expect(content('fahrenheit', 'kelvin').intro).toContain('do not add or subtract');
   });
 });
 
@@ -211,14 +219,18 @@ describe('fuel economy page content', () => {
   });
 });
 
-describe('grammar', () => {
-  it('uses "an" before a vowel sound', () => {
-    const inch = content('inch', 'centimeter');
-    expect(inch.faqs[0]?.question).toBe('How many centimeters are in an inch?');
-    expect(inch.intro.startsWith('An inch is the larger unit')).toBe(true);
+describe('precision and evidence', () => {
+  it('does not turn a small scientific multiplier into zero', () => {
+    expect(expression('electronvolt', 'joule')).toBe('J = eV × 1.602176634e-19');
+    expect(expression('picofarad', 'farad')).toBe('F = pF × 1e-12');
   });
 
-  it('describes an imperial unit with the right article', () => {
-    expect(content('meter', 'foot').intro).toContain('the foot is an imperial unit');
+  it('provides visible precision guidance and authoritative sources', () => {
+    const pair = content('meter', 'foot');
+    expect(pair.precisionNote).toContain('8 significant digits');
+    expect(pair.sources.some((source) => new URL(source.url).hostname === 'www.nist.gov')).toBe(
+      true,
+    );
+    expect(pair.formula?.explanation).not.toContain('exactly');
   });
 });

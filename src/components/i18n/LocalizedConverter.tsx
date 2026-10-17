@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { convertUnits } from '@/domain/conversion/engine';
-import { parseNumericInput } from '@/domain/conversion/parse';
+import { parseLocalizedNumericInput } from '@/i18n/parse';
 import { useCopyToClipboard } from '@/hooks/useCopyToClipboard';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { track } from '@/lib/analytics';
@@ -20,8 +20,8 @@ import { CheckIcon, CopyIcon, SwapIcon } from '@/components/ui/icons';
  * market's number format. Like the English one it converts on every
  * keystroke — there is no Convert button — and never navigates on change.
  *
- * It accepts both "2.54" and "2,54": parseNumericInput treats a lone comma as
- * a decimal comma, which is how Brazil, Italy, France and Indonesia type it.
+ * The page's locale determines decimal and grouping separators. Fractions,
+ * scientific notation and unambiguous decimal-point input are also accepted.
  */
 
 export interface ConverterUnitOption {
@@ -66,7 +66,10 @@ export function LocalizedConverter({
     options.find((option) => option.unit.id !== from?.unit.id) ??
     options[0];
 
-  const parsed = useMemo(() => parseNumericInput(rawValue), [rawValue]);
+  const parsed = useMemo(
+    () => parseLocalizedNumericInput(rawValue, numberLocale),
+    [rawValue, numberLocale],
+  );
   const conversion = useMemo(
     () => (from && to && parsed.ok ? convertUnits(parsed.value, from.unit, to.unit) : null),
     [from, to, parsed],

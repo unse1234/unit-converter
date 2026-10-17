@@ -1,11 +1,10 @@
-# Cloudflare Pages response headers.
+# Cloudflare Workers static asset response headers.
 #
 # A static export has no server, so next.config.ts's headers() is never called.
 # This file is the only place response headers are set. Cloudflare reads it
 # from the root of the published directory.
 #
-# Rules are matched most-specific-first, and only ONE rule applies per request,
-# so any path-specific block below must repeat the security headers it needs.
+# Matching rules combine; more specific values override repeated header names.
 
 /*
   X-Content-Type-Options: nosniff

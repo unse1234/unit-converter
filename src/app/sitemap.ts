@@ -7,7 +7,7 @@ import {
   getPageAlternates,
   hreflangMap,
 } from '@/i18n/pages';
-import { absoluteUrl } from '@/lib/site';
+import { absoluteUrl, siteConfig } from '@/lib/site';
 
 /**
  * XML sitemap, generated from the routes that actually exist.
@@ -17,8 +17,7 @@ import { absoluteUrl } from '@/lib/site';
  * appear: /search is excluded because it is noindex, and no query-string URL
  * is ever listed.
  *
- * Next splits this automatically once it grows past the 50,000-URL limit, so
- * the approach scales without a manual sitemap index.
+ * If the inventory ever reaches 50,000 URLs, split it with generateSitemaps.
  *
  * Localized pages are listed too, and every page with translations carries
  * its hreflang alternates (xhtml:link), the same set its <head> declares.
@@ -28,40 +27,38 @@ import { absoluteUrl } from '@/lib/site';
 export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+  // A build timestamp is not a content modification date. Omit lastmod until
+  // reliable per-page editorial dates are maintained.
+  if (!siteConfig.indexable) return [];
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: absoluteUrl('/'), lastModified, changeFrequency: 'weekly', priority: 1 },
-    { url: absoluteUrl('/about'), lastModified, changeFrequency: 'yearly', priority: 0.3 },
-    { url: absoluteUrl('/contact'), lastModified, changeFrequency: 'yearly', priority: 0.3 },
-    { url: absoluteUrl('/privacy-policy'), lastModified, changeFrequency: 'yearly', priority: 0.2 },
-    { url: absoluteUrl('/terms'), lastModified, changeFrequency: 'yearly', priority: 0.2 },
+    { url: absoluteUrl('/'), changeFrequency: 'weekly', priority: 1 },
+    { url: absoluteUrl('/about'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/contact'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/privacy-policy'), changeFrequency: 'yearly', priority: 0.2 },
+    { url: absoluteUrl('/terms'), changeFrequency: 'yearly', priority: 0.2 },
   ];
 
   const categoryPages: MetadataRoute.Sitemap = getCategories().map((category) => ({
     url: absoluteUrl(`/${category.slug}`),
-    lastModified,
     changeFrequency: 'monthly',
     priority: 0.8,
   }));
 
   const collectionPages: MetadataRoute.Sitemap = getCollections().map((collection) => ({
     url: absoluteUrl(`/${collection.slug}`),
-    lastModified,
     changeFrequency: 'monthly',
     priority: 0.7,
   }));
 
   const conversionPages: MetadataRoute.Sitemap = getAllConversionPairs().map((pair) => ({
     url: absoluteUrl(pair.path),
-    lastModified,
     changeFrequency: 'monthly',
     priority: 0.6,
   }));
 
   const localizedPages: MetadataRoute.Sitemap = getLocalizedPages().map((page) => ({
     url: absoluteUrl(page.path),
-    lastModified,
     changeFrequency: 'monthly',
     priority: page.kind === 'home' ? 0.9 : page.kind === 'category' ? 0.7 : 0.6,
     ...withAlternates(hreflangMap(getPageAlternates(page), absoluteUrl)),

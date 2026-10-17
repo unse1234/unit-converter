@@ -64,8 +64,8 @@ export const CARAT_IN_KILOGRAMS = 0.0002;
 /** Troy ounce, exact: 31.1034768 g (used for precious metals). */
 export const TROY_OUNCE_IN_KILOGRAMS = 0.0311034768;
 export const TROY_POUND_IN_KILOGRAMS = 12 * TROY_OUNCE_IN_KILOGRAMS;
-/** Atomic mass unit, CODATA 2018 recommended value. */
-export const ATOMIC_MASS_UNIT_IN_KILOGRAMS = 1.6605390666e-27;
+/** Atomic mass constant, CODATA 2022: 1.66053906892(52)e-27 kg; measured, not exact. */
+export const ATOMIC_MASS_UNIT_IN_KILOGRAMS = 1.66053906892e-27;
 
 /* -------------------------------------------------------------------------- */
 /* Area                                                                        */
@@ -167,11 +167,11 @@ export const ATMOSPHERE_IN_PASCALS = 101325;
 export const PSI_IN_PASCALS = POUND_FORCE_IN_NEWTONS / INCH_IN_METERS ** 2;
 /** Exact: 1 Torr = 1/760 atm. */
 export const TORR_IN_PASCALS = ATMOSPHERE_IN_PASCALS / 760;
-/** Conventional millimetre of mercury (NIST SP 811): 133.322387415 Pa exactly. */
-export const MMHG_IN_PASCALS = 133.322387415;
-/** Conventional inch of mercury at 0 degrees Celsius: 25.4 x mmHg. */
+/** Conventional millimetre of mercury (NIST SP 811): 133.3224 Pa. */
+export const MMHG_IN_PASCALS = 133.3224;
+/** Conventional inch of mercury: 25.4 x conventional mmHg (about 3386.389 Pa). */
 export const INHG_IN_PASCALS = MMHG_IN_PASCALS * 25.4;
-/** Conventional inch of water at 4 degrees Celsius (NIST SP 811). */
+/** Conventional inch of water (NIST SP 811), not the temperature-specific 4 °C unit. */
 export const INH2O_IN_PASCALS = 249.0889;
 
 /** Exact: thermochemical calorie = 4.184 J. */
@@ -188,8 +188,8 @@ export const FOOT_POUND_IN_JOULES = FOOT_IN_METERS * POUND_FORCE_IN_NEWTONS;
 export const ERG_IN_JOULES = 1e-7;
 /** Tonne of TNT, conventional: 1e9 cal_th = 4.184 GJ. */
 export const TON_TNT_IN_JOULES = 4.184e9;
-/** Therm (US): exactly 100 000 BTU_IT by NIST convention. */
-export const THERM_IN_JOULES = 100000 * BTU_IT_IN_JOULES;
+/** Therm (US), NIST SP 811 Appendix B.8: 1.054804e8 J. Distinct from therm (EC). */
+export const THERM_IN_JOULES = 105480400;
 
 /** Mechanical horsepower, exact: 550 ft.lbf/s. */
 export const MECHANICAL_HORSEPOWER_IN_WATTS = 550 * FOOT_POUND_IN_JOULES;

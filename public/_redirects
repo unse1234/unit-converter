@@ -1,9 +1,8 @@
 # Cloudflare redirects (static export, served by Workers static assets).
 #
-# The www -> bare domain redirect lives in the Cloudflare dashboard
-# (Rules -> Redirect Rules), because this file only accepts paths, not hosts.
-# Trailing slashes are handled automatically by Cloudflare's default
-# html_handling ("auto-trailing-slash"), so no rule is needed here.
+# The Worker normalizes host, protocol and known HTML path variants in one 308.
+# It probes Assets before redirecting a path so invalid routes retain a 404.
+# The legacy rule below is also available when Assets is used without the Worker.
 
 # --- Old URLs ---------------------------------------------------------------
 # The privacy page moved to /privacy-policy when the legal pages were added.

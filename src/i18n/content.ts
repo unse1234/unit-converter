@@ -30,10 +30,8 @@ import type {
 /**
  * Builds the content of a localized page from its spec.
  *
- * Every number on the page comes from the conversion engine and is formatted in
- * the language's notation, and every sentence comes from the language's
- * templates. Nothing numeric is typed by hand, so a page cannot state a value
- * that disagrees with its own converter.
+ * Generated examples and tables use the engine; authored notes and FAQ values
+ * need separate review against the definitions and sources.
  */
 
 export interface LocalizedUnit {
@@ -111,8 +109,7 @@ export function pairContext(locale: Locale, spec: PairSpec) {
   const formula = buildLocalFormula(from.unit, to.unit, locale, from.symbol, to.symbol);
   if (!formula) throw new Error(`No formula for ${spec.from} -> ${spec.to}`);
 
-  const factor =
-    formula.kind === 'affine' ? null : formatLocal(convertValue(1, from.unit, to.unit), locale, 8);
+  const factor = formula.kind === 'multiply' && formula.exact ? formula.factor : null;
 
   const ctx: PairContext = {
     phrase: spec.phrase,
@@ -166,7 +163,9 @@ export function buildPairContent(locale: Locale, spec: PairSpec): PairContent {
 
   const explanation =
     formula.kind === 'multiply'
-      ? text.multiplyExplanation(ctx)
+      ? formula.exact
+        ? text.multiplyExplanation(ctx)
+        : text.pairLead(ctx)
       : formula.kind === 'divide'
         ? text.divideExplanation({ ...ctx, divisor: formula.divisor ?? '' })
         : text.affineExplanation(ctx);
@@ -183,7 +182,7 @@ export function buildPairContent(locale: Locale, spec: PairSpec): PairContent {
     explanation,
     example,
     table: tableRows(locale, spec, tableValues),
-    faqs: [...text.pairFaqs({ ...ctx, example }), ...(spec.faqs ?? [])],
+    faqs: spec.faqs ?? [],
   };
 }
 

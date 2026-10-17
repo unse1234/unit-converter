@@ -125,8 +125,8 @@ export const pressureUnits = defineUnits('pressure', 'pascal', [
     slug: 'mmhg',
     seo: 'primary',
     description:
-      'The conventional millimetre of mercury: 133.322387415 Pa. The blood-pressure unit.',
-    note: 'Almost identical to the torr, but defined separately. The difference is under one part per million.',
+      'The conventional millimetre of mercury: 133.3224 Pa, following the NIST SP 811 convention.',
+    note: 'Almost identical to the torr, but defined separately. This uses conventional mmHg, not a temperature-specific mercury-column realization.',
     source: 'NIST Special Publication 811',
   },
   {
@@ -150,6 +150,8 @@ export const pressureUnits = defineUnits('pressure', 'pascal', [
     system: 'imperial',
     factor: INH2O_IN_PASCALS,
     slug: 'inh2o',
-    description: 'Pressure from a one-inch column of water at 4 °C. Used for HVAC static pressure.',
+    description:
+      'The conventional inch of water, approximately 249.0889 pascals. Used for HVAC static pressure.',
+    note: 'This uses conventional inH₂O, not the temperature-specific water-column units at 4 °C or 60 °F.',
   },
 ]);

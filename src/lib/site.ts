@@ -3,26 +3,11 @@
  *
  * The canonical origin is never guessed. Every canonical URL, sitemap entry and
  * structured-data URL is built from it, so a wrong value would quietly point
- * search engines at the wrong host. It defaults to the production domain and
- * can be overridden for local work; next.config.ts validates any override.
+ * search engines at the wrong host. Local previews use the same production
+ * origin; next.config.ts rejects a conflicting legacy environment override.
  */
 
-/** The production origin. No trailing slash. */
-const PRODUCTION_URL = 'https://unitflip.org';
-
-function stripTrailingSlash(url: string): string {
-  return url.replace(/\/+$/, '');
-}
-
-/**
- * Resolution order:
- *  1. NEXT_PUBLIC_SITE_URL — set it to http://localhost:3000 for local work.
- *  2. The production domain.
- */
-function resolveSiteUrl(): string {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  return configured ? stripTrailingSlash(configured) : PRODUCTION_URL;
-}
+import { PRODUCTION_ORIGIN } from './site-origin';
 
 /**
  * Whether search engines may index this deployment.
@@ -37,12 +22,12 @@ function resolveIndexable(): boolean {
 
 export const siteConfig = {
   name: 'UnitFlip',
-  url: resolveSiteUrl(),
+  url: PRODUCTION_ORIGIN,
   indexable: resolveIndexable(),
   /** The default <title>, used verbatim on the homepage. */
   defaultTitle: 'UnitFlip – Free Online Unit Converter',
   description:
-    'Free online unit converter for length, weight, temperature, volume and 30 more categories. Exact conversion factors, formulas, worked examples and reference tables.',
+    'Free online unit converter for length, weight, temperature, volume and 30 more categories. Conversion formulas, worked examples, assumptions and reference tables.',
   locale: 'en-US',
   /** Published on the contact page and used in structured data. */
   contactEmail: 'contact@unitflip.org',
@@ -54,5 +39,8 @@ export const siteConfig = {
 
 /** Builds an absolute URL from a site-relative path. */
 export function absoluteUrl(path: string): string {
-  return `${siteConfig.url}${path.startsWith('/') ? path : `/${path}`}`;
+  if (path.startsWith('//')) throw new Error('Expected a site-relative URL.');
+  const url = new URL(path.startsWith('/') ? path : `/${path}`, siteConfig.url);
+  if (url.origin !== siteConfig.url) throw new Error('Expected a site-relative URL.');
+  return url.href;
 }

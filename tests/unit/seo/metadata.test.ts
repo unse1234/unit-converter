@@ -26,7 +26,7 @@ describe('conversion page metadata', () => {
     expect(metadata.title).toBe('Meters to Feet Converter');
     expect(metadata.alternates?.canonical).toBe(absoluteUrl('/length/meters-to-feet'));
     expect(metadata.openGraph?.url).toBe(absoluteUrl('/length/meters-to-feet'));
-    expect(String(metadata.description)).toContain('1 meter = 3.28084 feet');
+    expect(String(metadata.description)).toContain('1 meter ≈ 3.28084 feet');
   });
 
   it('keeps acronyms and system names intact in titles', () => {

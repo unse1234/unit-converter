@@ -349,7 +349,8 @@ export const equivalentDoseUnits = defineUnits('radiation-equivalent-dose', 'sie
     system: 'si',
     factor: 0.001,
     seo: 'primary',
-    description: 'One thousandth of a sievert. A chest X-ray is roughly 0.1 mSv.',
+    description:
+      'One thousandth of a sievert. Preserve whether the source measurement states equivalent dose or effective dose.',
   },
   {
     id: 'microsievert',

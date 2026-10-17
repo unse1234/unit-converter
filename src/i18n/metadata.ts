@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { capitalize } from '@/lib/text';
 import { absoluteUrl, siteConfig } from '@/lib/site';
-import { LOCALES, LOCALE_DEFINITIONS, type Locale } from './config';
+import { LOCALE_DEFINITIONS, type Locale } from './config';
 import { buildPairContent, screenContext, valueContext } from './content';
 import { LOCALE_CONTENT, getPageAlternates, hreflangMap, type LocalizedPage } from './pages';
 
@@ -101,9 +101,13 @@ export function localizedPageMetadata(page: LocalizedPage): Metadata {
       url,
       siteName: siteConfig.name,
       locale: definition.ogLocale,
-      alternateLocale: LOCALES.filter((code) => code !== page.locale).map(
-        (code) => LOCALE_DEFINITIONS[code].ogLocale,
-      ),
+      alternateLocale: Object.keys(getPageAlternates(page))
+        .filter((code) => code !== page.locale)
+        .map((code) =>
+          code === 'en'
+            ? siteConfig.locale.replace('-', '_')
+            : LOCALE_DEFINITIONS[code as Locale].ogLocale,
+        ),
       images: [{ ...SOCIAL_IMAGE, alt: `${siteConfig.name} — ${title}` }],
     },
     twitter: { card: 'summary_large_image', title, description, images: [SOCIAL_IMAGE.url] },

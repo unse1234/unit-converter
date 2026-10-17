@@ -60,6 +60,11 @@ export function UnitReference({ units }: { units: UnitDefinition[] }) {
               <tr key={unit.id} className="shadow-[0_1px_0_0_var(--ds-border)] last:shadow-none">
                 <th scope="row" className="text-fg px-4 py-2.5 text-left font-medium">
                   {unit.name}
+                  {unit.note ? (
+                    <span className="text-fg-secondary mt-1 block max-w-[42ch] text-xs leading-relaxed font-normal">
+                      {unit.note}
+                    </span>
+                  ) : null}
                 </th>
                 <td className="text-fg-secondary px-4 py-2.5">{unit.symbol || '—'}</td>
                 <td className="text-fg-subtle hidden px-4 py-2.5 sm:table-cell">

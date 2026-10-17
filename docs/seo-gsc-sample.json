@@ -1,0 +1,282 @@
+{
+  "observedDate": "2026-10-16",
+  "maxConcurrency": 2,
+  "evidenceBoundary": "Representative sample drawn from user-supplied Search Console excluded URL examples; checks show public responses and declared canonicals, not Google-selected canonical.",
+  "pages": [
+    {
+      "affectedUrl": "http://unitflip.org/length/inches-to-meters",
+      "expectedPreferredUrl": "https://unitflip.org/length/inches-to-meters",
+      "httpFirstResponse": {
+        "status": 301,
+        "location": "https://unitflip.org/length/inches-to-meters",
+        "server": "cloudflare",
+        "contentType": "text/html; charset=UTF-8",
+        "headers": {
+          "Date": "Fri, 16 Oct 2026 11:14:29 GMT",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Transfer-Encoding": "chunked",
+          "Connection": "close",
+          "Server-Timing": "cfEdge;dur=70,cfOrigin;dur=0",
+          "Location": "https://unitflip.org/length/inches-to-meters",
+          "Speculation-Rules": "\"/cdn-cgi/speculation\"",
+          "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=DtlSIJ95Y3e%2FnpKcmiq3X4cVlYDFHxATtsMWFOX5amw9hIuX0CHNjgPsZ1qyCKSmHX9nERYd3f8We0rJQ0nCubX1oVYcCGE4WMBMAP2%2Fc6XwL%2Bu1m2N6eQ7eZR53w3G4sLt9FskG3YoPDuk%3D\"}]}",
+          "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "Server": "cloudflare",
+          "CF-RAY": "a4b6a3e51d674121-ISB",
+          "alt-svc": "h3=\":443\"; ma=86400"
+        }
+      },
+      "httpsDestination": {
+        "status": 200,
+        "finalUrl": "https://unitflip.org/length/inches-to-meters",
+        "responseRobots": null,
+        "canonicals": [
+          "https://unitflip.org/length/inches-to-meters"
+        ],
+        "hreflang": {},
+        "language": "en",
+        "title": [
+          "Inches to Meters Converter | UnitFlip"
+        ],
+        "description": "1 inch = 0.0254 meters. Convert inches to meters instantly, with the exact formula, worked examples and a reference table.",
+        "robots": "index, follow",
+        "googlebot": "index, follow",
+        "h1": [
+          "Inches to Meters Converter"
+        ],
+        "initialHtmlLength": 124630
+      }
+    },
+    {
+      "affectedUrl": "http://unitflip.org/id/tv",
+      "expectedPreferredUrl": "https://unitflip.org/id/tv",
+      "httpFirstResponse": {
+        "status": 301,
+        "location": "https://unitflip.org/id/tv",
+        "server": "cloudflare",
+        "contentType": "text/html; charset=UTF-8",
+        "headers": {
+          "Date": "Fri, 16 Oct 2026 11:14:29 GMT",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Transfer-Encoding": "chunked",
+          "Connection": "close",
+          "Server-Timing": "cfEdge;dur=3,cfOrigin;dur=0",
+          "Location": "https://unitflip.org/id/tv",
+          "Speculation-Rules": "\"/cdn-cgi/speculation\"",
+          "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=JmykaYwYBdyNaOnrPeJMb7R5sdE9i9%2FAOzk82wjvedQWvDp0kohwYOy3GKJur%2FQJlriOK0Zm8Csav5QRjAtcbx7VLavpMblDDEe%2FUdA14DnvnD44OfRXxoyU6Nz34LQgXPPI7p%2BaVtemnoA%3D\"}]}",
+          "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "Server": "cloudflare",
+          "CF-RAY": "a4b6a3e51a904122-ISB",
+          "alt-svc": "h3=\":443\"; ma=86400"
+        }
+      },
+      "httpsDestination": {
+        "status": 200,
+        "finalUrl": "https://unitflip.org/id/tv",
+        "responseRobots": null,
+        "canonicals": [
+          "https://unitflip.org/id/tv"
+        ],
+        "hreflang": {
+          "pt": "https://unitflip.org/pt/tv",
+          "id": "https://unitflip.org/id/tv"
+        },
+        "language": "id",
+        "title": [
+          "Ukuran TV dalam cm | UnitFlip"
+        ],
+        "description": "Diagonal, panjang, dan lebar layar TV 24 sampai 85 inch dalam sentimeter, untuk rasio 16:9.",
+        "robots": "index, follow",
+        "googlebot": "index, follow",
+        "h1": [
+          "Ukuran TV dalam cm"
+        ],
+        "initialHtmlLength": 58337
+      }
+    },
+    {
+      "affectedUrl": "http://unitflip.org/fr/temperature",
+      "expectedPreferredUrl": "https://unitflip.org/fr/temperature",
+      "httpFirstResponse": {
+        "status": 301,
+        "location": "https://unitflip.org/fr/temperature",
+        "server": "cloudflare",
+        "contentType": "text/html; charset=UTF-8",
+        "headers": {
+          "Date": "Fri, 16 Oct 2026 11:14:31 GMT",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Transfer-Encoding": "chunked",
+          "Connection": "close",
+          "Server-Timing": "cfEdge;dur=1,cfOrigin;dur=0",
+          "Location": "https://unitflip.org/fr/temperature",
+          "Speculation-Rules": "\"/cdn-cgi/speculation\"",
+          "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=IIfDG4%2FeNbLq5%2BMV14nL7AS34o%2BFaW%2BuN2PcHi%2B9SyiBxRMQ2yAlnPS%2BSNIB10dtcM8ZfPK7g9gnyl8ChpGY8S%2FTya2YxvB0%2BF8uJf8JDgxh0igpUVdJ1yZHebpqbh6f%2FhHjltl47cXkM7w%3D\"}]}",
+          "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "Server": "cloudflare",
+          "CF-RAY": "a4b6a3f33e9e1493-ISB",
+          "alt-svc": "h3=\":443\"; ma=86400"
+        }
+      },
+      "httpsDestination": {
+        "status": 200,
+        "finalUrl": "https://unitflip.org/fr/temperature",
+        "responseRobots": null,
+        "canonicals": [
+          "https://unitflip.org/fr/temperature"
+        ],
+        "hreflang": {
+          "en": "https://unitflip.org/temperature",
+          "es": "https://unitflip.org/es/temperatura",
+          "pt": "https://unitflip.org/pt/temperatura",
+          "it": "https://unitflip.org/it/temperatura",
+          "fr": "https://unitflip.org/fr/temperature",
+          "id": "https://unitflip.org/id/suhu",
+          "x-default": "https://unitflip.org/temperature"
+        },
+        "language": "fr",
+        "title": [
+          "Convertisseur de température | UnitFlip"
+        ],
+        "description": "Convertissez des degrés Fahrenheit en Celsius et inversement, avec le tableau des températures du four.",
+        "robots": "index, follow",
+        "googlebot": "index, follow",
+        "h1": [
+          "Convertisseur de température"
+        ],
+        "initialHtmlLength": 59696
+      }
+    },
+    {
+      "affectedUrl": "http://unitflip.org/fuel-economy/miles-per-us-gallon-to-liters-per-100-kilometers",
+      "expectedPreferredUrl": "https://unitflip.org/fuel-economy/miles-per-us-gallon-to-liters-per-100-kilometers",
+      "httpFirstResponse": {
+        "status": 301,
+        "location": "https://unitflip.org/fuel-economy/miles-per-us-gallon-to-liters-per-100-kilometers",
+        "server": "cloudflare",
+        "contentType": "text/html; charset=UTF-8",
+        "headers": {
+          "Date": "Fri, 16 Oct 2026 11:14:31 GMT",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Transfer-Encoding": "chunked",
+          "Connection": "close",
+          "Server-Timing": "cfEdge;dur=1,cfOrigin;dur=0",
+          "Location": "https://unitflip.org/fuel-economy/miles-per-us-gallon-to-liters-per-100-kilometers",
+          "Speculation-Rules": "\"/cdn-cgi/speculation\"",
+          "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=iCvkv1ezpfPaB2px4GlxvdREh4YAHDvpcX1XBConA31WBZa8r8BxVomALB1zcDzclCoiG4tBrwmOuhbwuMNbEqcn8%2BU1ww2nDaV9%2BHT8UKHYoWmqQRqqT0Xjf8loYA59PSpCmmE8wcV5ozg%3D\"}]}",
+          "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "Server": "cloudflare",
+          "CF-RAY": "a4b6a3f44d741a72-ISB",
+          "alt-svc": "h3=\":443\"; ma=86400"
+        }
+      },
+      "httpsDestination": {
+        "status": 200,
+        "finalUrl": "https://unitflip.org/fuel-economy/miles-per-us-gallon-to-liters-per-100-kilometers",
+        "responseRobots": null,
+        "canonicals": [
+          "https://unitflip.org/fuel-economy/miles-per-us-gallon-to-liters-per-100-kilometers"
+        ],
+        "hreflang": {},
+        "language": "en",
+        "title": [
+          "Miles per US Gallon to Liters per 100 Kilometers Converter | UnitFlip"
+        ],
+        "description": "L/100 km = 235.2145833 ÷ mpg (US). Convert miles per US gallon to liters per 100 kilometers instantly, with the exact formula, worked examples and a reference table.",
+        "robots": "index, follow",
+        "googlebot": "index, follow",
+        "h1": [
+          "Miles per US Gallon to Liters per 100 Kilometers Converter"
+        ],
+        "initialHtmlLength": 118790
+      }
+    },
+    {
+      "affectedUrl": "http://unitflip.org/es/longitud/pies-y-pulgadas-a-cm",
+      "expectedPreferredUrl": "https://unitflip.org/es/longitud/pies-y-pulgadas-a-cm",
+      "httpFirstResponse": {
+        "status": 301,
+        "location": "https://unitflip.org/es/longitud/pies-y-pulgadas-a-cm",
+        "server": "cloudflare",
+        "contentType": "text/html; charset=UTF-8",
+        "headers": {
+          "Date": "Fri, 16 Oct 2026 11:14:32 GMT",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Transfer-Encoding": "chunked",
+          "Connection": "close",
+          "Server-Timing": "cfEdge;dur=0,cfOrigin;dur=0",
+          "Location": "https://unitflip.org/es/longitud/pies-y-pulgadas-a-cm",
+          "Speculation-Rules": "\"/cdn-cgi/speculation\"",
+          "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=riF575bxgJqHtj%2Bii6Hf%2BsCokBbIzr%2BCh58AzdvTqdUhLkz6P20A2rgUHI%2FVPwIjWTp50855b8g2rrTe7tWJ7k63GerMGhM5w8DvQKAS20ugBXyGdrKgqa3jIN67NGn27g8XiFBJXBJ0dE4%3D\"}]}",
+          "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "Server": "cloudflare",
+          "CF-RAY": "a4b6a3f89f6a412b-ISB",
+          "alt-svc": "h3=\":443\"; ma=86400"
+        }
+      },
+      "httpsDestination": {
+        "status": 200,
+        "finalUrl": "https://unitflip.org/es/longitud/pies-y-pulgadas-a-cm",
+        "responseRobots": null,
+        "canonicals": [
+          "https://unitflip.org/es/longitud/pies-y-pulgadas-a-cm"
+        ],
+        "hreflang": {},
+        "language": "es",
+        "title": [
+          "Pies y pulgadas a cm: calculadora de estatura | UnitFlip"
+        ],
+        "description": "Convierte tu estatura de pies y pulgadas a centímetros. Por ejemplo, 5'11\" = 180.3 cm.",
+        "robots": "index, follow",
+        "googlebot": "index, follow",
+        "h1": [
+          "Pies y pulgadas a cm: calculadora de estatura"
+        ],
+        "initialHtmlLength": 69851
+      }
+    },
+    {
+      "affectedUrl": "http://unitflip.org/pressure/bars-to-mmhg",
+      "expectedPreferredUrl": "https://unitflip.org/pressure/bars-to-mmhg",
+      "httpFirstResponse": {
+        "status": 301,
+        "location": "https://unitflip.org/pressure/bars-to-mmhg",
+        "server": "cloudflare",
+        "contentType": "text/html; charset=UTF-8",
+        "headers": {
+          "Date": "Fri, 16 Oct 2026 11:14:33 GMT",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Transfer-Encoding": "chunked",
+          "Connection": "close",
+          "Server-Timing": "cfEdge;dur=2,cfOrigin;dur=0",
+          "Location": "https://unitflip.org/pressure/bars-to-mmhg",
+          "Speculation-Rules": "\"/cdn-cgi/speculation\"",
+          "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=5Jo6byMy%2FOFYUIDIWuT0%2BjWxNqn3bfDs82BLjsT3w4ZSzuYtalXUq1KGcYkSgaQkKFgTuo%2BPl25c55zY0wLWkeSLXjkiGI%2BfrFLtDTvgExQ34gfCVutRBzP%2B3PZKmg2hCOucZmDHB7bBeSA%3D\"}]}",
+          "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "Server": "cloudflare",
+          "CF-RAY": "a4b6a3fdfab24129-ISB",
+          "alt-svc": "h3=\":443\"; ma=86400"
+        }
+      },
+      "httpsDestination": {
+        "status": 200,
+        "finalUrl": "https://unitflip.org/pressure/bars-to-mmhg",
+        "responseRobots": null,
+        "canonicals": [
+          "https://unitflip.org/pressure/bars-to-mmhg"
+        ],
+        "hreflang": {},
+        "language": "en",
+        "title": [
+          "Bars to Millimeters of Mercury Converter | UnitFlip"
+        ],
+        "description": "1 bar = 750.062 millimeters of mercury. Convert bars to millimeters of mercury instantly, with the exact formula, worked examples and a reference table.",
+        "robots": "index, follow",
+        "googlebot": "index, follow",
+        "h1": [
+          "Bars to Millimeters of Mercury Converter"
+        ],
+        "initialHtmlLength": 121527
+      }
+    }
+  ]
+}

@@ -468,7 +468,7 @@ export const pt: LocaleContent = {
       extraUnits: ['us-cup', 'metric-cup', 'us-tablespoon', 'liter'],
       table: [0.25, 1 / 3, 0.5, 2 / 3, 0.75, 1, 1.5, 2, 3, 4],
       notes: [
-        'Nas receitas brasileiras, 1 xícara de chá equivale a 240 ml. Receitas americanas usam a xícara de 236,6 ml, e as australianas a xícara métrica de 250 ml. Escolha a sua no conversor.',
+        'Este conversor adota a xícara de chá de 240 ml. Receitas e utensílios podem usar outras convenções: a xícara americana tem cerca de 236,6 ml e a métrica, 250 ml. Confira a receita e escolha a sua no conversor.',
       ],
       faqs: [
         {

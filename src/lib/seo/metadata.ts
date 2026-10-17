@@ -6,6 +6,7 @@ import type { CategoryDefinition, CollectionDefinition, UnitDefinition } from '@
 import { getEnglishPageAlternates, hreflangMap } from '@/i18n/pages';
 import { absoluteUrl, siteConfig } from '@/lib/site';
 import { buildFormula } from './formula';
+import { displayRelation } from './conversion-guidance';
 import { pairPhrase, unitHeadingName } from './labels';
 
 /**
@@ -100,7 +101,7 @@ function titleCase(text: string): string {
 export function oneUnitStatement(from: UnitDefinition, to: UnitDefinition): string | null {
   const result = convertUnits(1, from, to);
   if (!result.ok) return null;
-  return `1 ${from.name} = ${formatNumber(result.value)} ${
+  return `1 ${from.name} ${displayRelation(result.value, 6)} ${formatNumber(result.value)} ${
     Math.abs(result.value) === 1 ? to.name : to.pluralName
   }`;
 }
@@ -116,7 +117,7 @@ export function conversionPageDescription(from: UnitDefinition, to: UnitDefiniti
     ? oneUnitStatement(from, to)
     : (buildFormula(from, to)?.expression ?? null);
 
-  return `${lead ? `${lead}. ` : ''}Convert ${pairPhrase(from, to)} instantly, with the exact formula, worked examples and a reference table.`;
+  return `${lead ? `${lead}. ` : ''}Convert ${pairPhrase(from, to)} instantly, with a formula, worked examples and a reference table.`;
 }
 
 export function buildConversionMetadata(
@@ -134,7 +135,7 @@ export function buildConversionMetadata(
 export function buildCategoryMetadata(category: CategoryDefinition, unitCount: number): Metadata {
   return buildMetadata({
     title: `${category.title} Converter`,
-    description: `${category.summary} Instant results, exact conversion factors and reference tables across ${unitCount} units.`,
+    description: `${category.summary} Instant results, conversion factors and reference tables across ${unitCount} units.`,
     path: `/${category.slug}`,
   });
 }
@@ -145,7 +146,7 @@ export function buildCollectionMetadata(
 ): Metadata {
   return buildMetadata({
     title: `${collection.title} Converter`,
-    description: `${collection.summary} ${unitCount} units with the exact definition for each measurement system.`,
+    description: `${collection.summary} ${unitCount} units with definitions and measurement-system distinctions.`,
     path: `/${collection.slug}`,
   });
 }

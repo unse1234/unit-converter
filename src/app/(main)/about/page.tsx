@@ -37,7 +37,7 @@ export default function AboutPage() {
             <Prose>
               <p>
                 {unitCount} units across {categoryCount} categories, with {pageCount} conversion
-                pages that each carry the exact factor, the formula, worked examples and a reference
+                English pages with conversion formulas, worked examples and a reference
                 table. Conversion happens as you type — there is no button to press and nothing to
                 wait for.
               </p>
@@ -47,19 +47,21 @@ export default function AboutPage() {
           <Section title="Where the numbers come from">
             <Prose>
               <p>
-                Every constant is taken from a defining authority rather than copied from another
-                converter. The main sources are the <strong>BIPM SI Brochure</strong>, the{' '}
-                <strong>1959 International Yard and Pound Agreement</strong>,{' '}
-                <strong>NIST Special Publication 811</strong>, <strong>ISO 80000</strong>,{' '}
-                <strong>IEC 80000-13</strong> for binary units, and <strong>IAU resolutions</strong>{' '}
-                for astronomical distances.
+                Category and conversion pages link the definitions and conventions used for their
+                units. References include the{' '}
+                <a href="https://www.bipm.org/en/publications/si-brochure">BIPM SI Brochure</a>,{' '}
+                <a href="https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors">NIST Special Publication 811</a>{' '}
+                for customary factors, and{' '}
+                <a href="https://physics.nist.gov/cuu/Units/binary.html">NIST guidance on binary prefixes</a>{' '}
+                for digital units.
               </p>
               <p>
                 Most of these are definitions, not measurements. An inch is exactly 2.54 centimetres
-                and a pound is exactly 0.45359237 kilograms, so the conversions between metric and
-                imperial units here are exact, not approximations. Calculations run at full double
-                precision with no intermediate rounding; the number of digits you see is a display
-                setting and changing it never changes the underlying result.
+                and a pound is exactly 0.45359237 kilograms. Other values are conventional or
+                approximate, such as Mach at a stated atmospheric condition and measured atomic
+                mass. Calculations use JavaScript floating point arithmetic, which has finite
+                precision. Displayed formulas and results may be rounded; the precision control
+                changes the displayed result without changing the underlying calculation.
               </p>
             </Prose>
           </Section>

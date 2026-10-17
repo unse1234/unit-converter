@@ -146,7 +146,9 @@ export const energyUnits = defineUnits('energy', 'joule', [
     aliases: ['therms', 'thm'],
     system: 'imperial',
     factor: THERM_IN_JOULES,
-    description: 'Exactly 100,000 BTU. The US natural-gas billing unit.',
+    description: 'The US therm: 105,480,400 joules, using the NIST US natural-gas convention.',
+    note: 'Therm definitions differ. This is therm (US), not therm (EC) or 100,000 International Table BTU.',
+    source: 'NIST SP 811, Appendix B.8 and footnote 24',
   },
   {
     id: 'foot-pound',

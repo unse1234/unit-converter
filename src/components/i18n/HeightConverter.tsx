@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { parseNumericInput } from '@/domain/conversion/parse';
+import { parseLocalizedNumericInput } from '@/i18n/parse';
 import type { ConverterLabels } from '@/i18n/types';
 
 /**
@@ -24,7 +24,7 @@ export function HeightConverter({
 
   const parse = (raw: string) => {
     if (raw.trim() === '') return 0;
-    const parsed = parseNumericInput(raw);
+    const parsed = parseLocalizedNumericInput(raw, numberLocale);
     return parsed.ok && parsed.value >= 0 ? parsed.value : null;
   };
 

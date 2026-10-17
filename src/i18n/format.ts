@@ -2,6 +2,7 @@ import { convertUnits, getConversionRatio } from '@/domain/conversion/engine';
 import { asFraction } from '@/lib/seo/formula';
 import type { UnitDefinition } from '@/types/units';
 import { LOCALE_DEFINITIONS, type Locale } from './config';
+import { parseLocalizedNumericInput } from './parse';
 
 /**
  * Number and formula formatting for the localized pages.
@@ -71,7 +72,10 @@ export function fillSlug(pattern: string, value: number): string {
 /** Number of significant digits needed to write a value exactly (up to 12). */
 function exactDigits(value: number): number | null {
   for (let digits = 1; digits <= 12; digits += 1) {
-    if (Math.abs(Number(value.toPrecision(digits)) - value) <= Math.abs(value) * 1e-12) {
+    if (
+      Math.abs(Number(value.toPrecision(digits)) - value) <=
+      Math.abs(value) * Number.EPSILON * 4
+    ) {
       return digits;
     }
   }
@@ -82,6 +86,8 @@ export type FormulaKind = 'multiply' | 'divide' | 'affine';
 
 export interface LocalFormula {
   kind: FormulaKind;
+  /** Whether the displayed formula constant preserves the engine's precision. */
+  exact: boolean;
   /** "cm = in × 2.54" */
   expression: string;
   /** The multiplier, e.g. "2.54", for multiply formulas. */
@@ -113,6 +119,18 @@ export function buildLocalFormula(
     const converted = convertUnits(value, from, to);
     return converted.ok ? formatResult(converted.value, locale, temperature) : '—';
   };
+  const resultEquals = (value: number) => {
+    const converted = convertUnits(value, from, to);
+    if (!converted.ok) return '≈';
+    const displayed = parseLocalizedNumericInput(
+      result(value),
+      LOCALE_DEFINITIONS[locale].numberLocale,
+    );
+    return displayed.ok &&
+      Math.abs(displayed.value - converted.value) <= Math.abs(converted.value) * Number.EPSILON * 4
+      ? '='
+      : '≈';
+  };
 
   const ratio = getConversionRatio(from, to);
 
@@ -124,10 +142,11 @@ export function buildLocalFormula(
       const divisor = f(1 / ratio, 12);
       return {
         kind: 'divide',
+        exact: true,
         expression: `${toSymbol} = ${fromSymbol} ÷ ${divisor}`,
         factor: f(ratio, 6),
         divisor,
-        working: (value) => `${f(value)} ÷ ${divisor} = ${result(value)}`,
+        working: (value) => `${f(value)} ÷ ${divisor} ${resultEquals(value)} ${result(value)}`,
       };
     }
 
@@ -136,10 +155,12 @@ export function buildLocalFormula(
     const equals = exact ? '=' : '≈';
     return {
       kind: 'multiply',
+      exact,
       expression: `${toSymbol} ${equals} ${fromSymbol} × ${factor}`,
       factor,
       divisor: null,
-      working: (value) => `${f(value)} × ${factor} ${equals} ${result(value)}`,
+      working: (value) =>
+        `${f(value)} × ${factor} ${exact ? resultEquals(value) : '≈'} ${result(value)}`,
     };
   }
 
@@ -160,31 +181,35 @@ export function buildLocalFormula(
   if (Math.abs(scale - 1) < 1e-12) {
     return {
       kind: 'affine',
+      exact: true,
       expression: `${toSymbol} = ${fromSymbol} ${sign(shift)} ${f(Math.abs(shift))}`,
       factor: null,
       divisor: null,
-      working: (value) => `${f(value)} ${sign(shift)} ${f(Math.abs(shift))} = ${result(value)}`,
+      working: (value) =>
+        `${f(value)} ${sign(shift)} ${f(Math.abs(shift))} ${resultEquals(value)} ${result(value)}`,
     };
   }
 
   if (isClean(shift)) {
     return {
       kind: 'affine',
+      exact: true,
       expression: `${toSymbol} = ${fromSymbol} × ${scaleText} ${sign(shift)} ${f(Math.abs(shift))}`,
       factor: null,
       divisor: null,
       working: (value) =>
-        `${f(value)} × ${scaleText} ${sign(shift)} ${f(Math.abs(shift))} = ${result(value)}`,
+        `${f(value)} × ${scaleText} ${sign(shift)} ${f(Math.abs(shift))} ${resultEquals(value)} ${result(value)}`,
     };
   }
 
   return {
     kind: 'affine',
+    exact: true,
     expression: `${toSymbol} = (${fromSymbol} ${sign(inner)} ${f(Math.abs(inner))}) × ${scaleText}`,
     factor: null,
     divisor: null,
     working: (value) =>
-      `(${f(value)} ${sign(inner)} ${f(Math.abs(inner))}) × ${scaleText} = ${result(value)}`,
+      `(${f(value)} ${sign(inner)} ${f(Math.abs(inner))}) × ${scaleText} ${resultEquals(value)} ${result(value)}`,
   };
 }
 
